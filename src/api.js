@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Production API Configuration
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080/api';
+const API_BASE_URL = "https://zealthy-onboarding-backend-production.up.railway.app/api";
 
 console.log('API Base URL:', API_BASE_URL);
 
