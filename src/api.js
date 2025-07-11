@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Production API Configuration
-const API_BASE_URL = "https://zealthy-onboarding-backend-production.up.railway.app/api/api/users";
+const API_BASE_URL = "https://zealthy-onboarding-backend-production.up.railway.app/api/users";
 
 console.log('API Base URL:', API_BASE_URL);
 
