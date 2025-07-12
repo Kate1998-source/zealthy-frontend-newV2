@@ -1,12 +1,164 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import { getAdminConfig, registerCompleteUser, checkEmailExists } from './api';
-import AboutMeComponent from './components/form-components/AboutMeComponent';
-import AddressComponent from './components/form-components/AddressComponent';
-import BirthdateComponent from './components/form-components/BirthdateComponent';
 import AdminDashboard from './components/AdminDashboard';
 import DataTable from './components/DataTable';
 import './App.css';
+
+// Mock API functions (replace with your actual API)
+const mockAPI = {
+  getAdminConfig: async () => {
+    const saved = localStorage.getItem('admin_config');
+    if (saved) {
+      return JSON.parse(saved);
+    }
+    return { 2: ['ABOUT_ME', 'ADDRESS'], 3: ['BIRTHDATE'] };
+  },
+  
+  checkEmailExists: async (email) => {
+    // Simulate checking if email exists
+    const existingEmails = JSON.parse(localStorage.getItem('existing_emails') || '[]');
+    return existingEmails.includes(email);
+  },
+  
+  registerCompleteUser: async (userData) => {
+    // Simulate user registration
+    const users = JSON.parse(localStorage.getItem('registered_users') || '[]');
+    const newUser = { ...userData, id: Date.now() };
+    users.push(newUser);
+    localStorage.setItem('registered_users', JSON.stringify(users));
+    
+    // Add email to existing emails
+    const existingEmails = JSON.parse(localStorage.getItem('existing_emails') || '[]');
+    existingEmails.push(userData.email);
+    localStorage.setItem('existing_emails', JSON.stringify(existingEmails));
+    
+    return newUser;
+  }
+};
+
+// Form Components
+function AboutMeComponent({ value, onChange }) {
+  return (
+    <div style={{ backgroundColor: 'white', padding: '20px', borderRadius: '10px', border: '1px solid #e0e0e0' }}>
+      <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#333' }}>
+        📝 Tell us about yourself
+      </label>
+      <textarea
+        value={value}
+        onChange={(e) => onChange('aboutMe', e.target.value)}
+        placeholder="Write a brief description about yourself..."
+        style={{
+          width: '100%',
+          minHeight: '120px',
+          padding: '12px',
+          border: '1px solid #ccc',
+          borderRadius: '5px',
+          fontSize: '16px',
+          fontFamily: 'inherit',
+          resize: 'vertical',
+          boxSizing: 'border-box'
+        }}
+      />
+      <div style={{ fontSize: '12px', color: '#666', marginTop: '5px' }}>
+        {value.length}/500 characters
+      </div>
+    </div>
+  );
+}
+
+function AddressComponent({ values, onChange }) {
+  return (
+    <div style={{ backgroundColor: 'white', padding: '20px', borderRadius: '10px', border: '1px solid #e0e0e0' }}>
+      <label style={{ display: 'block', marginBottom: '15px', fontWeight: 'bold', color: '#333' }}>
+        🏠 Your Address
+      </label>
+      
+      <div style={{ display: 'grid', gap: '15px' }}>
+        <input
+          type="text"
+          value={values.streetAddress || ''}
+          onChange={(e) => onChange('streetAddress', e.target.value)}
+          placeholder="Street Address"
+          style={{
+            padding: '12px',
+            border: '1px solid #ccc',
+            borderRadius: '5px',
+            fontSize: '16px',
+            width: '100%',
+            boxSizing: 'border-box'
+          }}
+        />
+        
+        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '10px' }}>
+          <input
+            type="text"
+            value={values.city || ''}
+            onChange={(e) => onChange('city', e.target.value)}
+            placeholder="City"
+            style={{
+              padding: '12px',
+              border: '1px solid #ccc',
+              borderRadius: '5px',
+              fontSize: '16px',
+              boxSizing: 'border-box'
+            }}
+          />
+          
+          <input
+            type="text"
+            value={values.state || ''}
+            onChange={(e) => onChange('state', e.target.value)}
+            placeholder="State"
+            style={{
+              padding: '12px',
+              border: '1px solid #ccc',
+              borderRadius: '5px',
+              fontSize: '16px',
+              boxSizing: 'border-box'
+            }}
+          />
+          
+          <input
+            type="text"
+            value={values.zip || ''}
+            onChange={(e) => onChange('zip', e.target.value)}
+            placeholder="ZIP"
+            style={{
+              padding: '12px',
+              border: '1px solid #ccc',
+              borderRadius: '5px',
+              fontSize: '16px',
+              boxSizing: 'border-box'
+            }}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function BirthdateComponent({ value, onChange }) {
+  return (
+    <div style={{ backgroundColor: 'white', padding: '20px', borderRadius: '10px', border: '1px solid #e0e0e0' }}>
+      <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#333' }}>
+        🎂 Your Birthdate
+      </label>
+      <input
+        type="date"
+        value={value}
+        onChange={(e) => onChange('birthdate', e.target.value)}
+        style={{
+          padding: '12px',
+          border: '1px solid #ccc',
+          borderRadius: '5px',
+          fontSize: '16px',
+          width: '100%',
+          boxSizing: 'border-box'
+        }}
+      />
+    </div>
+  );
+}
 
 function OnboardingWizard() {
   const [currentStep, setCurrentStep] = useState(1);
@@ -31,7 +183,7 @@ function OnboardingWizard() {
 
   const loadAdminConfig = async () => {
     try {
-      const config = await getAdminConfig();
+      const config = await mockAPI.getAdminConfig();
       setAdminConfig(config);
       console.log('Admin config loaded:', config);
     } catch (error) {
@@ -77,7 +229,7 @@ function OnboardingWizard() {
     console.log('Step 1 submit:', email);
 
     try {
-      const emailExists = await checkEmailExists(email);
+      const emailExists = await mockAPI.checkEmailExists(email);
       if (emailExists) {
         setError('❌ This email is already registered. Please use a different email.');
         return;
@@ -133,7 +285,7 @@ function OnboardingWizard() {
 
       console.log('Sending to backend:', completeUserData);
 
-      const result = await registerCompleteUser(completeUserData);
+      const result = await mockAPI.registerCompleteUser(completeUserData);
       console.log('Registration successful:', result);
       
       alert(`🎉 Registration Complete! User ID: ${result.id}`);
