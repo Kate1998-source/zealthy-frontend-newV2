@@ -111,7 +111,7 @@ function DataTable() {
           marginBottom: '10px',
           color: '#2c3e50'
         }}>
-          📊 User Data Table
+           User Data Table
         </h1>
         <p style={{ 
           fontSize: '16px', 
@@ -143,7 +143,7 @@ function DataTable() {
               gap: '8px'
             }}
           >
-            {loading ? '⏳ Loading...' : '🔄 Refresh Data'}
+            {loading ? ' Loading...' : ' Refresh Data'}
           </button>
           
           <div style={{ 
@@ -160,7 +160,7 @@ function DataTable() {
               fontSize: '14px',
               fontWeight: 'bold'
             }}>
-              ❌ {error}
+               {error}
             </div>
           )}
         </div>
@@ -324,7 +324,7 @@ function DataTable() {
                   fontWeight: 'bold'
                 }}
               >
-                🔄 Try Again
+                 Try Again
               </button>
             )}
           </div>
