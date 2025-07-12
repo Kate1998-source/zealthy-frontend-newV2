@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { getAdminConfig, updateAdminConfig } from '../api';
 
 // Mock DnD implementation since react-dnd might not be available
@@ -614,24 +615,58 @@ function AdminDashboard() {
           textAlign: 'center',
           padding: '20px'
         }}>
-          <nav>
-            <a href="/" style={{ 
-              color: '#3498db', 
-              textDecoration: 'none',
-              fontSize: '16px',
-              fontWeight: 'bold'
-            }}>
+          <nav style={{ display: 'flex', justifyContent: 'center', gap: '20px', flexWrap: 'wrap' }}>
+            <Link 
+              to="/" 
+              style={{ 
+                color: '#3498db', 
+                textDecoration: 'none',
+                fontSize: '16px',
+                fontWeight: 'bold',
+                padding: '12px 24px',
+                borderRadius: '8px',
+                backgroundColor: '#f8f9fa',
+                border: '2px solid #3498db',
+                transition: 'all 0.3s ease',
+                display: 'inline-block'
+              }}
+              onMouseOver={(e) => {
+                e.target.style.backgroundColor = '#3498db';
+                e.target.style.color = 'white';
+              }}
+              onMouseOut={(e) => {
+                e.target.style.backgroundColor = '#f8f9fa';
+                e.target.style.color = '#3498db';
+              }}
+            >
               ← Back to Onboarding
-            </a>
-            {' | '}
-            <a href="/data" style={{ 
-              color: '#3498db', 
-              textDecoration: 'none',
-              fontSize: '16px',
-              fontWeight: 'bold'
-            }}>
+            </Link>
+            
+            <Link 
+              to="/data" 
+              style={{ 
+                color: '#3498db', 
+                textDecoration: 'none',
+                fontSize: '16px',
+                fontWeight: 'bold',
+                padding: '12px 24px',
+                borderRadius: '8px',
+                backgroundColor: '#f8f9fa',
+                border: '2px solid #3498db',
+                transition: 'all 0.3s ease',
+                display: 'inline-block'
+              }}
+              onMouseOver={(e) => {
+                e.target.style.backgroundColor = '#3498db';
+                e.target.style.color = 'white';
+              }}
+              onMouseOut={(e) => {
+                e.target.style.backgroundColor = '#f8f9fa';
+                e.target.style.color = '#3498db';
+              }}
+            >
               📊 View Data →
-            </a>
+            </Link>
           </nav>
         </div>
       </div>
