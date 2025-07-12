@@ -57,7 +57,6 @@ axios.interceptors.response.use(
 export const registerCompleteUser = async (userData) => {
   try {
     console.log('API: Complete registration request');
-    // Fixed endpoint - removed duplicate /users
     const response = await axios.post(`${API_BASE_URL}/users/register-complete`, userData);
     console.log('API: Registration successful');
     return response.data;
@@ -71,7 +70,6 @@ export const registerCompleteUser = async (userData) => {
 export const checkEmailExists = async (email) => {
   try {
     console.log('API: Checking email:', email);
-    // Fixed endpoint - removed duplicate /users
     const response = await axios.get(`${API_BASE_URL}/users/email/${encodeURIComponent(email)}`);
     console.log('API: Email exists');
     return true;
@@ -85,12 +83,10 @@ export const checkEmailExists = async (email) => {
   }
 };
 
-// Get all users - FIXED
+// Get all users
 export const getAllUsers = async () => {
   try {
     console.log('API: Fetching users');
-    
-    // Try the endpoint that we know works: /api/users
     const response = await axios.get(`${API_BASE_URL}/users`);
     console.log(`API: Got ${response.data?.length || 0} users`);
     return response.data || [];
