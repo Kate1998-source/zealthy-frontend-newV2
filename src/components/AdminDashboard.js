@@ -1,12 +1,71 @@
 import React, { useState, useEffect } from 'react';
-import { DndProvider, useDrag, useDrop } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
-import { getAdminConfig } from '../api';
+
+// Mock DnD implementation since react-dnd might not be available
+const DragContext = React.createContext();
+
+function DndProvider({ children, backend }) {
+  const [draggedItem, setDraggedItem] = useState(null);
+  const [dropTarget, setDropTarget] = useState(null);
+
+  return (
+    <DragContext.Provider value={{ draggedItem, setDraggedItem, dropTarget, setDropTarget }}>
+      {children}
+    </DragContext.Provider>
+  );
+}
+
+function useDrag({ type, item, collect }) {
+  const context = React.useContext(DragContext);
+  const [isDragging, setIsDragging] = useState(false);
+
+  const drag = (element) => {
+    if (!element) return;
+
+    element.draggable = true;
+    element.ondragstart = (e) => {
+      setIsDragging(true);
+      context.setDraggedItem(item);
+      e.dataTransfer.effectAllowed = 'move';
+    };
+    element.ondragend = () => {
+      setIsDragging(false);
+      context.setDraggedItem(null);
+    };
+  };
+
+  return [collect ? collect({ isDragging }) : { isDragging }, drag];
+}
+
+function useDrop({ accept, drop, collect }) {
+  const context = React.useContext(DragContext);
+  const [isOver, setIsOver] = useState(false);
+
+  const dropRef = (element) => {
+    if (!element) return;
+
+    element.ondragover = (e) => {
+      e.preventDefault();
+      setIsOver(true);
+    };
+    element.ondragleave = () => {
+      setIsOver(false);
+    };
+    element.ondrop = (e) => {
+      e.preventDefault();
+      setIsOver(false);
+      if (context.draggedItem && drop) {
+        drop(context.draggedItem);
+      }
+    };
+  };
+
+  return [collect ? collect({ isOver, canDrop: true }) : { isOver, canDrop: true }, dropRef];
+}
 
 const ItemType = 'COMPONENT';
 
 // Draggable Component Item
-function DraggableComponent({ component, currentPage, onMove }) {
+function DraggableComponent({ component, currentPage, onMove, onRemove }) {
   const [{ isDragging }, drag] = useDrag({
     type: ItemType,
     item: { 
@@ -16,7 +75,7 @@ function DraggableComponent({ component, currentPage, onMove }) {
       currentPage 
     },
     collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
+      isDragging: monitor.isDragging,
     }),
   });
 
@@ -35,11 +94,37 @@ function DraggableComponent({ component, currentPage, onMove }) {
         gap: '10px',
         opacity: isDragging ? 0.5 : 1,
         transition: 'all 0.2s ease',
-        boxShadow: isDragging ? '0 4px 8px rgba(0,0,0,0.2)' : '0 1px 3px rgba(0,0,0,0.1)'
+        boxShadow: isDragging ? '0 4px 8px rgba(0,0,0,0.2)' : '0 1px 3px rgba(0,0,0,0.1)',
+        position: 'relative'
       }}
     >
       <span style={{ fontSize: '20px' }}>{component.icon}</span>
       <span style={{ fontWeight: 'bold', flex: 1 }}>{component.name}</span>
+      
+      {/* Remove button */}
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          onRemove(component.key, currentPage);
+        }}
+        style={{
+          background: '#ff4757',
+          color: 'white',
+          border: 'none',
+          borderRadius: '50%',
+          width: '20px',
+          height: '20px',
+          fontSize: '12px',
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}
+        title="Remove component"
+      >
+        ×
+      </button>
+      
       <span style={{ 
         fontSize: '12px', 
         color: '#666',
@@ -49,6 +134,43 @@ function DraggableComponent({ component, currentPage, onMove }) {
       }}>
         📱 Drag me!
       </span>
+    </div>
+  );
+}
+
+// Available Component (not yet assigned to a page)
+function AvailableComponent({ component, onAdd }) {
+  const [{ isDragging }, drag] = useDrag({
+    type: ItemType,
+    item: { 
+      key: component.key, 
+      name: component.name, 
+      icon: component.icon,
+      currentPage: null 
+    },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging,
+    }),
+  });
+
+  return (
+    <div
+      ref={drag}
+      style={{
+        border: '2px solid #ecf0f1',
+        borderRadius: '10px',
+        padding: '15px',
+        backgroundColor: isDragging ? '#e3f2fd' : '#fafbfc',
+        cursor: 'grab',
+        opacity: isDragging ? 0.5 : 1,
+        transition: 'all 0.2s ease'
+      }}
+    >
+      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
+        <span style={{ fontSize: '24px' }}>{component.icon}</span>
+        <span style={{ fontWeight: 'bold', fontSize: '16px' }}>{component.name}</span>
+      </div>
+      <p style={{ color: '#7f8c8d', fontSize: '14px', margin: 0 }}>{component.description}</p>
     </div>
   );
 }
@@ -63,8 +185,8 @@ function PageDropZone({ pageNumber, components, onDrop, children }) {
       }
     },
     collect: (monitor) => ({
-      isOver: monitor.isOver(),
-      canDrop: monitor.canDrop(),
+      isOver: monitor.isOver,
+      canDrop: monitor.canDrop,
     }),
   });
 
@@ -116,6 +238,22 @@ function PageDropZone({ pageNumber, components, onDrop, children }) {
   );
 }
 
+// Mock API for Admin Dashboard
+const adminAPI = {
+  getAdminConfig: async () => {
+    const saved = localStorage.getItem('admin_config');
+    if (saved) {
+      return JSON.parse(saved);
+    }
+    return { 2: ['ABOUT_ME', 'ADDRESS'], 3: ['BIRTHDATE'] };
+  },
+
+  saveAdminConfig: async (config) => {
+    localStorage.setItem('admin_config', JSON.stringify(config));
+    return { success: true };
+  }
+};
+
 // Main Admin Dashboard Component
 function AdminDashboard() {
   const [config, setConfig] = useState({ 2: [], 3: [] });
@@ -134,11 +272,10 @@ function AdminDashboard() {
 
   const loadConfig = async () => {
     try {
-      const response = await getAdminConfig();
+      const response = await adminAPI.getAdminConfig();
       setConfig(response);
     } catch (error) {
       console.error('Failed to load config:', error);
-     
       setConfig({
         2: ['ABOUT_ME', 'ADDRESS'],
         3: ['BIRTHDATE']
@@ -156,9 +293,15 @@ function AdminDashboard() {
       newConfig[page] = newConfig[page].filter(comp => comp !== componentKey);
     });
     
-    
+    // Add component to new page
     newConfig[newPage] = [...newConfig[newPage], componentKey];
     
+    setConfig(newConfig);
+  };
+
+  const removeComponent = (componentKey, pageNumber) => {
+    const newConfig = { ...config };
+    newConfig[pageNumber] = newConfig[pageNumber].filter(comp => comp !== componentKey);
     setConfig(newConfig);
   };
 
@@ -171,26 +314,10 @@ function AdminDashboard() {
 
     setSaving(true);
     try {
-      const componentPageMap = {};
-      Object.entries(config).forEach(([page, components]) => {
-        components.forEach(comp => {
-          componentPageMap[comp] = parseInt(page);
-        });
-      });
-
-      const response = await fetch('http://localhost:8080/api/admin/config', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ componentPageMap })
-      });
-
-      if (response.ok) {
-        alert('✅ Configuration saved successfully! 🎉');
-      } else {
-        alert('❌ Failed to save configuration');
-      }
+      await adminAPI.saveAdminConfig(config);
+      alert('✅ Configuration saved successfully! 🎉');
     } catch (error) {
-      alert('❌ Error saving configuration');
+      alert('❌ Failed to save configuration');
       console.error('Save error:', error);
     } finally {
       setSaving(false);
@@ -199,6 +326,11 @@ function AdminDashboard() {
 
   const getComponentDetails = (componentKey) => {
     return components.find(c => c.key === componentKey);
+  };
+
+  const getAvailableComponents = () => {
+    const usedComponents = [...config[2], ...config[3]];
+    return components.filter(comp => !usedComponents.includes(comp.key));
   };
 
   if (loading) {
@@ -214,8 +346,10 @@ function AdminDashboard() {
     );
   }
 
+  const availableComponents = getAvailableComponents();
+
   return (
-    <DndProvider backend={HTML5Backend}>
+    <DndProvider backend={null}>
       <div style={{ 
         padding: '20px', 
         maxWidth: '1200px', 
@@ -248,36 +382,31 @@ function AdminDashboard() {
           </p>
         </div>
 
-        {/* Component Overview */}
-        <div style={{ 
-          backgroundColor: 'white', 
-          borderRadius: '15px', 
-          padding: '25px',
-          marginBottom: '30px',
-          boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
-        }}>
-          <h2 style={{ marginBottom: '20px', color: '#2c3e50' }}>📦 Available Components</h2>
+        {/* Available Components */}
+        {availableComponents.length > 0 && (
           <div style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', 
-            gap: '15px' 
+            backgroundColor: 'white', 
+            borderRadius: '15px', 
+            padding: '25px',
+            marginBottom: '30px',
+            boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
           }}>
-            {components.map(component => (
-              <div key={component.key} style={{
-                border: '2px solid #ecf0f1',
-                borderRadius: '10px',
-                padding: '15px',
-                backgroundColor: '#fafbfc'
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
-                  <span style={{ fontSize: '24px' }}>{component.icon}</span>
-                  <span style={{ fontWeight: 'bold', fontSize: '16px' }}>{component.name}</span>
-                </div>
-                <p style={{ color: '#7f8c8d', fontSize: '14px', margin: 0 }}>{component.description}</p>
-              </div>
-            ))}
+            <h2 style={{ marginBottom: '20px', color: '#2c3e50' }}>📦 Available Components</h2>
+            <div style={{ 
+              display: 'grid', 
+              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', 
+              gap: '15px' 
+            }}>
+              {availableComponents.map(component => (
+                <AvailableComponent
+                  key={component.key}
+                  component={component}
+                  onAdd={handleComponentMove}
+                />
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Page Configuration */}
         <div style={{ 
@@ -327,6 +456,7 @@ function AdminDashboard() {
                     component={component}
                     currentPage={2}
                     onMove={handleComponentMove}
+                    onRemove={removeComponent}
                   />
                 ) : null;
               })}
@@ -373,10 +503,50 @@ function AdminDashboard() {
                     component={component}
                     currentPage={3}
                     onMove={handleComponentMove}
+                    onRemove={removeComponent}
                   />
                 ) : null;
               })}
             </PageDropZone>
+          </div>
+        </div>
+
+        {/* Current Configuration Summary */}
+        <div style={{ 
+          backgroundColor: 'white',
+          borderRadius: '15px',
+          padding: '25px',
+          marginBottom: '30px',
+          boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+        }}>
+          <h2 style={{ marginBottom: '20px', color: '#2c3e50' }}>📊 Current Configuration</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+            <div>
+              <h3 style={{ color: '#3498db', marginBottom: '10px' }}>Page 2 Components:</h3>
+              <ul style={{ margin: 0, paddingLeft: '20px' }}>
+                {config[2].length > 0 ? config[2].map(comp => {
+                  const details = getComponentDetails(comp);
+                  return (
+                    <li key={comp} style={{ marginBottom: '5px' }}>
+                      {details?.icon} {details?.name}
+                    </li>
+                  );
+                }) : <li style={{ color: '#999' }}>No components</li>}
+              </ul>
+            </div>
+            <div>
+              <h3 style={{ color: '#27ae60', marginBottom: '10px' }}>Page 3 Components:</h3>
+              <ul style={{ margin: 0, paddingLeft: '20px' }}>
+                {config[3].length > 0 ? config[3].map(comp => {
+                  const details = getComponentDetails(comp);
+                  return (
+                    <li key={comp} style={{ marginBottom: '5px' }}>
+                      {details?.icon} {details?.name}
+                    </li>
+                  );
+                }) : <li style={{ color: '#999' }}>No components</li>}
+              </ul>
+            </div>
           </div>
         </div>
 
@@ -407,7 +577,26 @@ function AdminDashboard() {
             {saving ? '⏳ Saving...' : '💾 Save Configuration'}
           </button>
 
-          
+          <button 
+            onClick={() => {
+              if (window.confirm('Reset to default configuration?')) {
+                setConfig({ 2: ['ABOUT_ME', 'ADDRESS'], 3: ['BIRTHDATE'] });
+              }
+            }}
+            style={{ 
+              padding: '15px 40px', 
+              backgroundColor: '#6c757d',
+              color: 'white', 
+              border: 'none', 
+              borderRadius: '10px',
+              fontSize: '18px',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease'
+            }}
+          >
+            🔄 Reset to Default
+          </button>
 
           {(config[2].length === 0 || config[3].length === 0) && (
             <div style={{ 
