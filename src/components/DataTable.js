@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { getAllUsers } from '../api';
 
 function DataTable() {
@@ -350,7 +351,7 @@ function DataTable() {
         </div>
       )}
 
-      {/* Navigation */}
+      {/* Navigation - FIXED */}
       <div style={{ 
         marginTop: '40px', 
         textAlign: 'center',
@@ -359,32 +360,58 @@ function DataTable() {
         borderRadius: '15px',
         boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
       }}>
-        <nav>
-          <a href="/" style={{ 
-            color: '#3498db', 
-            textDecoration: 'none',
-            fontSize: '18px',
-            fontWeight: 'bold',
-            marginRight: '30px',
-            padding: '10px 20px',
-            borderRadius: '8px',
-            backgroundColor: '#f8f9fa',
-            transition: 'all 0.3s ease'
-          }}>
+        <nav style={{ display: 'flex', justifyContent: 'center', gap: '20px', flexWrap: 'wrap' }}>
+          <Link 
+            to="/" 
+            style={{ 
+              color: '#3498db', 
+              textDecoration: 'none',
+              fontSize: '18px',
+              fontWeight: 'bold',
+              padding: '12px 24px',
+              borderRadius: '8px',
+              backgroundColor: '#f8f9fa',
+              border: '2px solid #3498db',
+              transition: 'all 0.3s ease',
+              display: 'inline-block'
+            }}
+            onMouseOver={(e) => {
+              e.target.style.backgroundColor = '#3498db';
+              e.target.style.color = 'white';
+            }}
+            onMouseOut={(e) => {
+              e.target.style.backgroundColor = '#f8f9fa';
+              e.target.style.color = '#3498db';
+            }}
+          >
             ← Back to Onboarding
-          </a>
-          <a href="/admin" style={{ 
-            color: '#e74c3c', 
-            textDecoration: 'none',
-            fontSize: '18px',
-            fontWeight: 'bold',
-            padding: '10px 20px',
-            borderRadius: '8px',
-            backgroundColor: '#f8f9fa',
-            transition: 'all 0.3s ease'
-          }}>
+          </Link>
+          
+          <Link 
+            to="/admin" 
+            style={{ 
+              color: '#e74c3c', 
+              textDecoration: 'none',
+              fontSize: '18px',
+              fontWeight: 'bold',
+              padding: '12px 24px',
+              borderRadius: '8px',
+              backgroundColor: '#f8f9fa',
+              border: '2px solid #e74c3c',
+              transition: 'all 0.3s ease',
+              display: 'inline-block'
+            }}
+            onMouseOver={(e) => {
+              e.target.style.backgroundColor = '#e74c3c';
+              e.target.style.color = 'white';
+            }}
+            onMouseOut={(e) => {
+              e.target.style.backgroundColor = '#f8f9fa';
+              e.target.style.color = '#e74c3c';
+            }}
+          >
             🔧 Admin Dashboard →
-          </a>
+          </Link>
         </nav>
       </div>
     </div>
