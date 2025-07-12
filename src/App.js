@@ -8,9 +8,21 @@ import './App.css';
 // Form Components
 function AboutMeComponent({ value, onChange }) {
   return (
-    <div style={{ backgroundColor: 'white', padding: '20px', borderRadius: '10px', border: '1px solid #e0e0e0' }}>
-      <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#333' }}>
-        📝 Tell us about yourself
+    <div style={{ 
+      backgroundColor: 'white', 
+      padding: '24px', 
+      borderRadius: '12px', 
+      border: '1px solid #e5e7eb',
+      boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)'
+    }}>
+      <label style={{ 
+        display: 'block', 
+        marginBottom: '12px', 
+        fontWeight: '600', 
+        color: '#374151',
+        fontSize: '16px' 
+      }}>
+        Tell us about yourself
       </label>
       <textarea
         value={value}
@@ -19,16 +31,30 @@ function AboutMeComponent({ value, onChange }) {
         style={{
           width: '100%',
           minHeight: '120px',
-          padding: '12px',
-          border: '1px solid #ccc',
-          borderRadius: '5px',
-          fontSize: '16px',
+          padding: '12px 16px',
+          border: '1px solid #d1d5db',
+          borderRadius: '8px',
+          fontSize: '15px',
           fontFamily: 'inherit',
           resize: 'vertical',
-          boxSizing: 'border-box'
+          boxSizing: 'border-box',
+          lineHeight: '1.5',
+          transition: 'border-color 0.2s ease-in-out',
+          '&:focus': {
+            outline: 'none',
+            borderColor: '#3b82f6',
+            boxShadow: '0 0 0 3px rgba(59, 130, 246, 0.1)'
+          }
         }}
+        onFocus={(e) => e.target.style.borderColor = '#3b82f6'}
+        onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
       />
-      <div style={{ fontSize: '12px', color: '#666', marginTop: '5px' }}>
+      <div style={{ 
+        fontSize: '13px', 
+        color: '#6b7280', 
+        marginTop: '8px',
+        textAlign: 'right'
+      }}>
         {value.length}/500 characters
       </div>
     </div>
@@ -36,41 +62,54 @@ function AboutMeComponent({ value, onChange }) {
 }
 
 function AddressComponent({ values, onChange }) {
+  const inputStyle = {
+    padding: '12px 16px',
+    border: '1px solid #d1d5db',
+    borderRadius: '8px',
+    fontSize: '15px',
+    width: '100%',
+    boxSizing: 'border-box',
+    transition: 'border-color 0.2s ease-in-out'
+  };
+
   return (
-    <div style={{ backgroundColor: 'white', padding: '20px', borderRadius: '10px', border: '1px solid #e0e0e0' }}>
-      <label style={{ display: 'block', marginBottom: '15px', fontWeight: 'bold', color: '#333' }}>
-        🏠 Your Address
+    <div style={{ 
+      backgroundColor: 'white', 
+      padding: '24px', 
+      borderRadius: '12px', 
+      border: '1px solid #e5e7eb',
+      boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)'
+    }}>
+      <label style={{ 
+        display: 'block', 
+        marginBottom: '20px', 
+        fontWeight: '600', 
+        color: '#374151',
+        fontSize: '16px' 
+      }}>
+        Your Address
       </label>
       
-      <div style={{ display: 'grid', gap: '15px' }}>
+      <div style={{ display: 'grid', gap: '16px' }}>
         <input
           type="text"
           value={values.streetAddress || ''}
           onChange={(e) => onChange('streetAddress', e.target.value)}
           placeholder="Street Address"
-          style={{
-            padding: '12px',
-            border: '1px solid #ccc',
-            borderRadius: '5px',
-            fontSize: '16px',
-            width: '100%',
-            boxSizing: 'border-box'
-          }}
+          style={inputStyle}
+          onFocus={(e) => e.target.style.borderColor = '#3b82f6'}
+          onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
         />
         
-        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '10px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '12px' }}>
           <input
             type="text"
             value={values.city || ''}
             onChange={(e) => onChange('city', e.target.value)}
             placeholder="City"
-            style={{
-              padding: '12px',
-              border: '1px solid #ccc',
-              borderRadius: '5px',
-              fontSize: '16px',
-              boxSizing: 'border-box'
-            }}
+            style={inputStyle}
+            onFocus={(e) => e.target.style.borderColor = '#3b82f6'}
+            onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
           />
           
           <input
@@ -78,13 +117,9 @@ function AddressComponent({ values, onChange }) {
             value={values.state || ''}
             onChange={(e) => onChange('state', e.target.value)}
             placeholder="State"
-            style={{
-              padding: '12px',
-              border: '1px solid #ccc',
-              borderRadius: '5px',
-              fontSize: '16px',
-              boxSizing: 'border-box'
-            }}
+            style={inputStyle}
+            onFocus={(e) => e.target.style.borderColor = '#3b82f6'}
+            onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
           />
           
           <input
@@ -92,13 +127,9 @@ function AddressComponent({ values, onChange }) {
             value={values.zip || ''}
             onChange={(e) => onChange('zip', e.target.value)}
             placeholder="ZIP"
-            style={{
-              padding: '12px',
-              border: '1px solid #ccc',
-              borderRadius: '5px',
-              fontSize: '16px',
-              boxSizing: 'border-box'
-            }}
+            style={inputStyle}
+            onFocus={(e) => e.target.style.borderColor = '#3b82f6'}
+            onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
           />
         </div>
       </div>
@@ -108,22 +139,37 @@ function AddressComponent({ values, onChange }) {
 
 function BirthdateComponent({ value, onChange }) {
   return (
-    <div style={{ backgroundColor: 'white', padding: '20px', borderRadius: '10px', border: '1px solid #e0e0e0' }}>
-      <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#333' }}>
-        🎂 Your Birthdate
+    <div style={{ 
+      backgroundColor: 'white', 
+      padding: '24px', 
+      borderRadius: '12px', 
+      border: '1px solid #e5e7eb',
+      boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)'
+    }}>
+      <label style={{ 
+        display: 'block', 
+        marginBottom: '12px', 
+        fontWeight: '600', 
+        color: '#374151',
+        fontSize: '16px' 
+      }}>
+        Your Birthdate
       </label>
       <input
         type="date"
         value={value}
         onChange={(e) => onChange('birthdate', e.target.value)}
         style={{
-          padding: '12px',
-          border: '1px solid #ccc',
-          borderRadius: '5px',
-          fontSize: '16px',
+          padding: '12px 16px',
+          border: '1px solid #d1d5db',
+          borderRadius: '8px',
+          fontSize: '15px',
           width: '100%',
-          boxSizing: 'border-box'
+          boxSizing: 'border-box',
+          transition: 'border-color 0.2s ease-in-out'
         }}
+        onFocus={(e) => e.target.style.borderColor = '#3b82f6'}
+        onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
       />
     </div>
   );
@@ -132,7 +178,6 @@ function BirthdateComponent({ value, onChange }) {
 function OnboardingWizard() {
   const [currentStep, setCurrentStep] = useState(1);
   const [userData, setUserData] = useState({});
-  // Initialize with default admin configuration
   const [adminConfig, setAdminConfig] = useState({ 
     2: ['ABOUT_ME', 'ADDRESS'], 
     3: ['BIRTHDATE'] 
@@ -145,7 +190,6 @@ function OnboardingWizard() {
     restoreProgress();
   }, []);
 
-  // Auto-save progress
   useEffect(() => {
     if (userData.email && currentStep > 1) {
       localStorage.setItem('zealthy_user_data', JSON.stringify(userData));
@@ -161,7 +205,6 @@ function OnboardingWizard() {
       console.log('Admin config loaded:', config);
     } catch (error) {
       console.error('Admin config failed:', error);
-      // Keep default configuration if API fails
       setAdminConfig({
         2: ['ABOUT_ME', 'ADDRESS'],
         3: ['BIRTHDATE']
@@ -205,7 +248,7 @@ function OnboardingWizard() {
     try {
       const emailExists = await checkEmailExists(email);
       if (emailExists) {
-        setError('❌ This email is already registered. Please use a different email.');
+        setError('This email is already registered. Please use a different email.');
         return;
       }
 
@@ -216,7 +259,7 @@ function OnboardingWizard() {
       
     } catch (error) {
       console.error('Step 1 error:', error);
-      setError('❌ Failed to validate email. Please try again.');
+      setError('Failed to validate email. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -262,9 +305,8 @@ function OnboardingWizard() {
       const result = await registerCompleteUser(completeUserData);
       console.log('Registration successful:', result);
       
-      alert(`🎉 Registration Complete! User ID: ${result.id}`);
+      alert(`Registration Complete! User ID: ${result.id}`);
       
-      // Clear saved data
       localStorage.removeItem('zealthy_user_data');
       localStorage.removeItem('zealthy_current_step');
       setCurrentStep(1);
@@ -273,7 +315,7 @@ function OnboardingWizard() {
       
     } catch (error) {
       console.error('Registration error:', error);
-      setError(`❌ Registration failed: ${error.message || error}`);
+      setError(`Registration failed: ${error.message || error}`);
     } finally {
       setLoading(false);
     }
@@ -292,7 +334,6 @@ function OnboardingWizard() {
   const renderComponents = (pageNumber) => {
     const components = adminConfig[pageNumber] || [];
     
-    // Default components if admin config is empty
     if (components.length === 0) {
       if (pageNumber === 2) {
         return [
@@ -351,53 +392,87 @@ function OnboardingWizard() {
   };
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>🎯 Zealthy Onboarding</h1>
-        
+    <div style={{ 
+      minHeight: '100vh',
+      backgroundColor: '#f9fafb',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
+    }}>
+      {/* Header */}
+      <div style={{ 
+        backgroundColor: 'white',
+        borderBottom: '1px solid #e5e7eb',
+        padding: '20px 0'
+      }}>
+        <div style={{ 
+          maxWidth: '1200px',
+          margin: '0 auto',
+          padding: '0 20px'
+        }}>
+          <h1 style={{ 
+            margin: 0,
+            fontSize: '28px',
+            fontWeight: '700',
+            color: '#111827',
+            textAlign: 'center'
+          }}>
+            Zealthy Onboarding
+          </h1>
+        </div>
+      </div>
+
+      <div style={{ 
+        maxWidth: '800px',
+        margin: '0 auto',
+        padding: '40px 20px'
+      }}>
         {/* Progress Bar */}
-        <div style={{ display: 'flex', gap: '20px', marginBottom: '30px' }}>
-          {[1, 2, 3].map(step => (
-            <div key={step} style={{ 
-              width: '40px', 
-              height: '40px', 
-              borderRadius: '50%', 
-              backgroundColor: currentStep >= step ? '#007bff' : '#ccc',
-              color: 'white',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontWeight: 'bold'
-            }}>
-              {step}
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: '40px', 
+          marginBottom: '40px' 
+        }}>
+          {[1, 2, 3].map((step, index) => (
+            <div key={step} style={{ display: 'flex', alignItems: 'center' }}>
+              <div style={{ 
+                width: '48px', 
+                height: '48px', 
+                borderRadius: '50%', 
+                backgroundColor: currentStep >= step ? '#3b82f6' : '#e5e7eb',
+                color: currentStep >= step ? 'white' : '#6b7280',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: '600',
+                fontSize: '18px',
+                transition: 'all 0.3s ease'
+              }}>
+                {step}
+              </div>
+              {index < 2 && (
+                <div style={{ 
+                  width: '60px',
+                  height: '2px',
+                  backgroundColor: currentStep > step ? '#3b82f6' : '#e5e7eb',
+                  marginLeft: '20px',
+                  transition: 'all 0.3s ease'
+                }} />
+              )}
             </div>
           ))}
         </div>
 
-        {/* Debug Info - Development Only */}
-        {process.env.NODE_ENV === 'development' && (
-          <div style={{ 
-            backgroundColor: '#f0f0f0', 
-            padding: '10px', 
-            marginBottom: '20px',
-            fontSize: '12px',
-            borderRadius: '5px'
-          }}>
-            <strong>Debug:</strong> Step {currentStep} | Email: {userData.email || 'None'} | 
-            Keys: {Object.keys(userData).join(', ')}
-          </div>
-        )}
-
         {/* Error Message */}
         {error && (
           <div style={{ 
-            color: '#dc3545', 
-            backgroundColor: '#f8d7da', 
-            padding: '15px', 
-            borderRadius: '5px', 
-            marginBottom: '20px',
-            border: '1px solid #f5c6cb',
-            fontWeight: 'bold'
+            color: '#dc2626', 
+            backgroundColor: '#fef2f2', 
+            padding: '16px 20px', 
+            borderRadius: '8px', 
+            marginBottom: '24px',
+            border: '1px solid #fecaca',
+            fontSize: '15px'
           }}>
             {error}
           </div>
@@ -405,46 +480,89 @@ function OnboardingWizard() {
         
         {/* Step 1: Email/Password */}
         {currentStep === 1 && (
-          <div className="step-content">
-            <h2>Step 1: Create Account</h2>
-            <p style={{ color: '#666', marginBottom: '20px' }}>
-              We'll check if your email is available before proceeding.
-            </p>
+          <div style={{ 
+            backgroundColor: 'white',
+            padding: '40px',
+            borderRadius: '16px',
+            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+            border: '1px solid #e5e7eb'
+          }}>
+            <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+              <h2 style={{ 
+                fontSize: '24px',
+                fontWeight: '600',
+                color: '#111827',
+                marginBottom: '8px'
+              }}>
+                Create Your Account
+              </h2>
+              <p style={{ 
+                color: '#6b7280', 
+                fontSize: '16px',
+                margin: 0
+              }}>
+                We'll check if your email is available before proceeding
+              </p>
+            </div>
             
             <form onSubmit={handleStep1Submit} style={{ maxWidth: '400px', margin: '0 auto' }}>
-              <div style={{ marginBottom: '15px' }}>
+              <div style={{ marginBottom: '20px' }}>
+                <label style={{ 
+                  display: 'block',
+                  marginBottom: '8px',
+                  fontWeight: '500',
+                  color: '#374151',
+                  fontSize: '14px'
+                }}>
+                  Email Address
+                </label>
                 <input 
                   type="email" 
                   name="email"
                   defaultValue={userData.email || ''}
-                  placeholder="Email" 
+                  placeholder="Enter your email" 
                   required 
                   style={{ 
                     width: '100%', 
-                    padding: '12px', 
-                    borderRadius: '5px', 
-                    border: '1px solid #ccc',
-                    fontSize: '16px',
-                    boxSizing: 'border-box'
+                    padding: '12px 16px', 
+                    borderRadius: '8px', 
+                    border: '1px solid #d1d5db',
+                    fontSize: '15px',
+                    boxSizing: 'border-box',
+                    transition: 'border-color 0.2s ease-in-out'
                   }}
+                  onFocus={(e) => e.target.style.borderColor = '#3b82f6'}
+                  onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
                 />
               </div>
-              <div style={{ marginBottom: '20px' }}>
+              <div style={{ marginBottom: '24px' }}>
+                <label style={{ 
+                  display: 'block',
+                  marginBottom: '8px',
+                  fontWeight: '500',
+                  color: '#374151',
+                  fontSize: '14px'
+                }}>
+                  Password
+                </label>
                 <input 
                   type="password" 
                   name="password"
                   defaultValue={userData.password || ''}
-                  placeholder="Password (min 6 characters)" 
+                  placeholder="Enter your password (min 6 characters)" 
                   minLength="6"
                   required 
                   style={{ 
                     width: '100%', 
-                    padding: '12px', 
-                    borderRadius: '5px', 
-                    border: '1px solid #ccc',
-                    fontSize: '16px',
-                    boxSizing: 'border-box'
+                    padding: '12px 16px', 
+                    borderRadius: '8px', 
+                    border: '1px solid #d1d5db',
+                    fontSize: '15px',
+                    boxSizing: 'border-box',
+                    transition: 'border-color 0.2s ease-in-out'
                   }}
+                  onFocus={(e) => e.target.style.borderColor = '#3b82f6'}
+                  onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
                 />
               </div>
               
@@ -453,16 +571,24 @@ function OnboardingWizard() {
                 disabled={loading}
                 style={{ 
                   width: '100%', 
-                  padding: '12px', 
-                  backgroundColor: loading ? '#6c757d' : '#007bff',
+                  padding: '14px 20px', 
+                  backgroundColor: loading ? '#9ca3af' : '#3b82f6',
                   color: 'white', 
                   border: 'none', 
-                  borderRadius: '5px',
+                  borderRadius: '8px',
                   fontSize: '16px',
-                  cursor: loading ? 'not-allowed' : 'pointer'
+                  fontWeight: '600',
+                  cursor: loading ? 'not-allowed' : 'pointer',
+                  transition: 'all 0.2s ease-in-out'
+                }}
+                onMouseOver={(e) => {
+                  if (!loading) e.target.style.backgroundColor = '#2563eb';
+                }}
+                onMouseOut={(e) => {
+                  if (!loading) e.target.style.backgroundColor = '#3b82f6';
                 }}
               >
-                {loading ? '🔍 Checking Email...' : '✅ Check Email & Continue →'}
+                {loading ? 'Checking Email...' : 'Continue'}
               </button>
             </form>
           </div>
@@ -470,126 +596,204 @@ function OnboardingWizard() {
 
         {/* Step 2: Dynamic Components */}
         {currentStep === 2 && (
-          <div className="step-content">
-            <h2>Step 2: Tell Us About Yourself</h2>
-            <p style={{ color: '#666', marginBottom: '20px' }}>
-              Your progress is automatically saved. Safe to refresh the page.
-            </p>
+          <div>
+            <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+              <h2 style={{ 
+                fontSize: '24px',
+                fontWeight: '600',
+                color: '#111827',
+                marginBottom: '8px'
+              }}>
+                Tell Us About Yourself
+              </h2>
+              <p style={{ 
+                color: '#6b7280', 
+                fontSize: '16px',
+                margin: 0
+              }}>
+                Your progress is automatically saved
+              </p>
+            </div>
             
             <div style={{ 
               display: 'flex', 
               flexDirection: 'column', 
-              gap: '30px', 
-              maxWidth: '600px', 
-              margin: '20px auto' 
+              gap: '24px',
+              marginBottom: '32px'
             }}>
               {renderComponents(2)}
             </div>
             
-            <button 
-              onClick={handleNextStep}
-              style={{ 
-                padding: '12px 30px', 
-                backgroundColor: '#28a745', 
-                color: 'white', 
-                border: 'none', 
-                borderRadius: '5px',
-                fontSize: '16px',
-                cursor: 'pointer',
-                marginTop: '20px'
-              }}
-            >
-              Next Step →
-            </button>
+            <div style={{ textAlign: 'center' }}>
+              <button 
+                onClick={handleNextStep}
+                style={{ 
+                  padding: '14px 32px', 
+                  backgroundColor: '#10b981', 
+                  color: 'white', 
+                  border: 'none', 
+                  borderRadius: '8px',
+                  fontSize: '16px',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease-in-out'
+                }}
+                onMouseOver={(e) => e.target.style.backgroundColor = '#059669'}
+                onMouseOut={(e) => e.target.style.backgroundColor = '#10b981'}
+              >
+                Continue to Next Step
+              </button>
+            </div>
           </div>
         )}
 
         {/* Step 3: Final Step */}
         {currentStep === 3 && (
-          <div className="step-content">
-            <h2>Step 3: Final Step!</h2>
-            <p style={{ color: '#666', marginBottom: '20px' }}>
-              Complete your registration. This will save all data to the database.
-            </p>
+          <div>
+            <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+              <h2 style={{ 
+                fontSize: '24px',
+                fontWeight: '600',
+                color: '#111827',
+                marginBottom: '8px'
+              }}>
+                Almost Done!
+              </h2>
+              <p style={{ 
+                color: '#6b7280', 
+                fontSize: '16px',
+                margin: 0
+              }}>
+                Complete your registration to save all data
+              </p>
+            </div>
             
             <div style={{ 
               display: 'flex', 
               flexDirection: 'column', 
-              gap: '30px', 
-              maxWidth: '600px', 
-              margin: '20px auto' 
+              gap: '24px',
+              marginBottom: '32px'
             }}>
               {renderComponents(3)}
             </div>
             
             {/* Data Preview */}
             <div style={{ 
-              backgroundColor: '#e8f5e8', 
-              padding: '15px', 
-              borderRadius: '5px', 
-              margin: '20px auto',
-              maxWidth: '600px',
-              border: '1px solid #c3e6c3'
+              backgroundColor: '#f0fdf4', 
+              padding: '24px', 
+              borderRadius: '12px', 
+              marginBottom: '32px',
+              border: '1px solid #bbf7d0'
             }}>
-              <h4 style={{ marginTop: 0, color: '#155724' }}>📋 Review Your Information:</h4>
-              <div style={{ textAlign: 'left', color: '#155724' }}>
-                <p><strong>Email:</strong> {userData.email}</p>
-                {userData.aboutMe && <p><strong>About Me:</strong> {userData.aboutMe.length > 50 ? userData.aboutMe.substring(0, 50) + '...' : userData.aboutMe}</p>}
-                {userData.streetAddress && <p><strong>Address:</strong> {userData.streetAddress}{userData.city ? `, ${userData.city}` : ''}{userData.state ? ` ${userData.state}` : ''}{userData.zip ? ` ${userData.zip}` : ''}</p>}
-                {userData.birthdate && <p><strong>Birthdate:</strong> {userData.birthdate}</p>}
+              <h4 style={{ 
+                marginTop: 0, 
+                marginBottom: '16px',
+                color: '#166534',
+                fontSize: '18px',
+                fontWeight: '600'
+              }}>
+                Review Your Information
+              </h4>
+              <div style={{ color: '#166534', lineHeight: '1.6' }}>
+                <p style={{ margin: '8px 0' }}><strong>Email:</strong> {userData.email}</p>
+                {userData.aboutMe && (
+                  <p style={{ margin: '8px 0' }}>
+                    <strong>About Me:</strong> {userData.aboutMe.length > 50 ? userData.aboutMe.substring(0, 50) + '...' : userData.aboutMe}
+                  </p>
+                )}
+                {userData.streetAddress && (
+                  <p style={{ margin: '8px 0' }}>
+                    <strong>Address:</strong> {userData.streetAddress}
+                    {userData.city ? `, ${userData.city}` : ''}
+                    {userData.state ? ` ${userData.state}` : ''}
+                    {userData.zip ? ` ${userData.zip}` : ''}
+                  </p>
+                )}
+                {userData.birthdate && (
+                  <p style={{ margin: '8px 0' }}>
+                    <strong>Birthdate:</strong> {userData.birthdate}
+                  </p>
+                )}
               </div>
             </div>
             
-            <button 
-              onClick={handleNextStep}
-              disabled={loading}
-              style={{ 
-                padding: '15px 35px', 
-                backgroundColor: loading ? '#6c757d' : '#dc3545', 
-                color: 'white', 
-                border: 'none', 
-                borderRadius: '5px',
-                fontSize: '18px',
-                fontWeight: 'bold',
-                cursor: loading ? 'not-allowed' : 'pointer',
-                marginTop: '20px'
-              }}
-            >
-              {loading ? '💾 Saving to Database...' : '🎉 Complete Registration'}
-            </button>
+            <div style={{ textAlign: 'center' }}>
+              <button 
+                onClick={handleNextStep}
+                disabled={loading}
+                style={{ 
+                  padding: '16px 40px', 
+                  backgroundColor: loading ? '#9ca3af' : '#dc2626', 
+                  color: 'white', 
+                  border: 'none', 
+                  borderRadius: '8px',
+                  fontSize: '18px',
+                  fontWeight: '600',
+                  cursor: loading ? 'not-allowed' : 'pointer',
+                  transition: 'all 0.2s ease-in-out'
+                }}
+                onMouseOver={(e) => {
+                  if (!loading) e.target.style.backgroundColor = '#b91c1c';
+                }}
+                onMouseOut={(e) => {
+                  if (!loading) e.target.style.backgroundColor = '#dc2626';
+                }}
+              >
+                {loading ? 'Saving to Database...' : 'Complete Registration'}
+              </button>
+            </div>
           </div>
         )}
 
         {/* Navigation */}
-        <div style={{ marginTop: '40px' }}>
-          <nav>
-            <Link to="/admin" style={{ color: '#007bff', textDecoration: 'none', marginRight: '20px' }}>
-              🔧 Admin Dashboard
+        <div style={{ 
+          textAlign: 'center',
+          marginTop: '48px',
+          paddingTop: '24px',
+          borderTop: '1px solid #e5e7eb'
+        }}>
+          <nav style={{ display: 'flex', justifyContent: 'center', gap: '32px', flexWrap: 'wrap' }}>
+            <Link 
+              to="/admin" 
+              style={{ 
+                color: '#3b82f6', 
+                textDecoration: 'none',
+                fontWeight: '500',
+                fontSize: '15px'
+              }}
+            >
+              Admin Dashboard
             </Link>
-            <Link to="/data" style={{ color: '#007bff', textDecoration: 'none' }}>
-              📊 View Data
+            <Link 
+              to="/data" 
+              style={{ 
+                color: '#3b82f6', 
+                textDecoration: 'none',
+                fontWeight: '500',
+                fontSize: '15px'
+              }}
+            >
+              View Data
             </Link>
             {currentStep > 1 && (
-              <>
-                {' | '}
-                <button 
-                  onClick={clearProgress}
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    color: '#dc3545',
-                    textDecoration: 'underline',
-                    cursor: 'pointer',
-                    fontSize: '16px'
-                  }}
-                >
-                  🔄 Start Over
-                </button>
-              </>
+              <button 
+                onClick={clearProgress}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: '#dc2626',
+                  textDecoration: 'underline',
+                  cursor: 'pointer',
+                  fontSize: '15px',
+                  fontWeight: '500'
+                }}
+              >
+                Start Over
+              </button>
             )}
           </nav>
         </div>
-      </header>
+      </div>
     </div>
   );
 }
