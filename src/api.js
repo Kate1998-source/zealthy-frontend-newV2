@@ -113,7 +113,7 @@ export const getAdminConfig = async () => {
     return response.data;
   } catch (error) {
     console.error('API: Admin config failed, using default');
-    // Return default config for resilience
+    // Return default config for resilience - each page has at least one component
     return {
       2: ['ABOUT_ME', 'ADDRESS'],
       3: ['BIRTHDATE']
@@ -171,67 +171,6 @@ export const healthCheck = async () => {
   }
 };
 
-// Mock API Functions (fallback for development/testing)
-const mockAPI = {
-  async getAdminConfig() {
-    const saved = localStorage.getItem('admin_config');
-    if (saved) {
-      return JSON.parse(saved);
-    }
-    return { 2: ['ABOUT_ME', 'ADDRESS'], 3: ['BIRTHDATE'] };
-  },
-
-  async updateAdminConfig(config) {
-    localStorage.setItem('admin_config', JSON.stringify(config));
-    return { success: true };
-  },
-
-  async checkEmailExists(email) {
-    const existingEmails = JSON.parse(localStorage.getItem('existing_emails') || '[]');
-    return existingEmails.includes(email);
-  },
-
-  async registerCompleteUser(userData) {
-    // Simulate user registration
-    const users = JSON.parse(localStorage.getItem('registered_users') || '[]');
-    const newUser = { 
-      ...userData, 
-      id: Date.now(),
-      createdAt: new Date().toISOString()
-    };
-    users.push(newUser);
-    localStorage.setItem('registered_users', JSON.stringify(users));
-    
-    // Add email to existing emails
-    const existingEmails = JSON.parse(localStorage.getItem('existing_emails') || '[]');
-    existingEmails.push(userData.email);
-    localStorage.setItem('existing_emails', JSON.stringify(existingEmails));
-    
-    return newUser;
-  },
-
-  async getAllUsers() {
-    const users = JSON.parse(localStorage.getItem('registered_users') || '[]');
-    return users;
-  }
-};
-
-// Environment-based API selection
-const USE_MOCK_API = process.env.REACT_APP_USE_MOCK_API === 'true' || process.env.NODE_ENV === 'test';
-
-// Export the appropriate API functions
-export const api = USE_MOCK_API ? mockAPI : {
-  registerCompleteUser,
-  checkEmailExists,
-  getAllUsers,
-  getAdminConfig,
-  updateAdminConfig,
-  registerUser,
-  updateUserStep,
-  getUserById,
-  healthCheck
-};
-
 // Default export with all functions
 export default {
   registerCompleteUser,
@@ -242,7 +181,5 @@ export default {
   registerUser,
   updateUserStep,
   getUserById,
-  healthCheck,
-  mockAPI,
-  api
+  healthCheck
 };
