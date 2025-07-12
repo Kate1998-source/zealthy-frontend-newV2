@@ -65,7 +65,7 @@ function useDrop({ accept, drop, collect }) {
 
 const ItemType = 'COMPONENT';
 
-// Draggable Component Item
+// Draggable Component Item (already on a page)
 function DraggableComponent({ component, currentPage, onMove, onRemove }) {
   const [{ isDragging }, drag] = useDrag({
     type: ItemType,
@@ -241,7 +241,11 @@ function PageDropZone({ pageNumber, components, onDrop, children }) {
 
 // Main Admin Dashboard Component
 function AdminDashboard() {
-  const [config, setConfig] = useState({ 2: [], 3: [] });
+  // Initialize with default configuration - each page has at least one component
+  const [config, setConfig] = useState({ 
+    2: ['ABOUT_ME', 'ADDRESS'], 
+    3: ['BIRTHDATE'] 
+  });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
@@ -261,6 +265,7 @@ function AdminDashboard() {
       setConfig(response);
     } catch (error) {
       console.error('Failed to load config:', error);
+      // Keep default configuration if API fails
       setConfig({
         2: ['ABOUT_ME', 'ADDRESS'],
         3: ['BIRTHDATE']
