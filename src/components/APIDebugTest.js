@@ -16,7 +16,7 @@ const APIDebugTest = () => {
       results.directFetch = {
         status: response.status,
         data: data,
-        success: true
+        success: response.ok
       };
       console.log('✅ Direct fetch success:', results.directFetch);
     } catch (error) {
@@ -41,7 +41,7 @@ const APIDebugTest = () => {
       results.corsTest = {
         status: response.status,
         headers: Object.fromEntries(response.headers.entries()),
-        success: true
+        success: response.ok
       };
       console.log('✅ CORS test success:', results.corsTest);
     } catch (error) {
