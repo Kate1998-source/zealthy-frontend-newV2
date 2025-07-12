@@ -410,7 +410,7 @@ function DataTable() {
               e.target.style.color = '#e74c3c';
             }}
           >
-            🔧 Admin Dashboard →
+             Admin Dashboard →
           </Link>
         </nav>
       </div>
