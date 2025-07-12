@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { getAdminConfig, updateAdminConfig } from '../api';
 
 // Mock DnD implementation since react-dnd might not be available
 const DragContext = React.createContext();
@@ -238,22 +239,6 @@ function PageDropZone({ pageNumber, components, onDrop, children }) {
   );
 }
 
-// Mock API for Admin Dashboard
-const adminAPI = {
-  getAdminConfig: async () => {
-    const saved = localStorage.getItem('admin_config');
-    if (saved) {
-      return JSON.parse(saved);
-    }
-    return { 2: ['ABOUT_ME', 'ADDRESS'], 3: ['BIRTHDATE'] };
-  },
-
-  saveAdminConfig: async (config) => {
-    localStorage.setItem('admin_config', JSON.stringify(config));
-    return { success: true };
-  }
-};
-
 // Main Admin Dashboard Component
 function AdminDashboard() {
   const [config, setConfig] = useState({ 2: [], 3: [] });
@@ -272,7 +257,7 @@ function AdminDashboard() {
 
   const loadConfig = async () => {
     try {
-      const response = await adminAPI.getAdminConfig();
+      const response = await getAdminConfig();
       setConfig(response);
     } catch (error) {
       console.error('Failed to load config:', error);
@@ -314,7 +299,15 @@ function AdminDashboard() {
 
     setSaving(true);
     try {
-      await adminAPI.saveAdminConfig(config);
+      // Convert config to the format expected by the backend
+      const componentPageMap = {};
+      Object.entries(config).forEach(([page, components]) => {
+        components.forEach(comp => {
+          componentPageMap[comp] = parseInt(page);
+        });
+      });
+
+      await updateAdminConfig({ componentPageMap });
       alert('✅ Configuration saved successfully! 🎉');
     } catch (error) {
       alert('❌ Failed to save configuration');
