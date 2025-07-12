@@ -132,7 +132,11 @@ function BirthdateComponent({ value, onChange }) {
 function OnboardingWizard() {
   const [currentStep, setCurrentStep] = useState(1);
   const [userData, setUserData] = useState({});
-  const [adminConfig, setAdminConfig] = useState({ 2: [], 3: [] });
+  // Initialize with default admin configuration
+  const [adminConfig, setAdminConfig] = useState({ 
+    2: ['ABOUT_ME', 'ADDRESS'], 
+    3: ['BIRTHDATE'] 
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -157,6 +161,7 @@ function OnboardingWizard() {
       console.log('Admin config loaded:', config);
     } catch (error) {
       console.error('Admin config failed:', error);
+      // Keep default configuration if API fails
       setAdminConfig({
         2: ['ABOUT_ME', 'ADDRESS'],
         3: ['BIRTHDATE']
