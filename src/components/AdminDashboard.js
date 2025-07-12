@@ -134,7 +134,7 @@ function DraggableComponent({ component, currentPage, onMove, onRemove }) {
         padding: '2px 6px',
         borderRadius: '10px'
       }}>
-        📱 Drag me!
+         Drag me!
       </span>
     </div>
   );
@@ -218,7 +218,7 @@ function PageDropZone({ pageNumber, components, onDrop, children }) {
           color: '#4caf50',
           pointerEvents: 'none'
         }}>
-          🎯 Drop component here!
+           Drop component here!
         </div>
       )}
       
@@ -299,7 +299,7 @@ function AdminDashboard() {
   const saveConfig = async () => {
     // Validate: each page must have at least one component
     if (config[2].length === 0 || config[3].length === 0) {
-      alert('❌ Each page must have at least one component!');
+      alert(' Each page must have at least one component!');
       return;
     }
 
@@ -314,9 +314,9 @@ function AdminDashboard() {
       });
 
       await updateAdminConfig({ componentPageMap });
-      alert('✅ Configuration saved successfully! 🎉');
+      alert(' Configuration saved successfully! ');
     } catch (error) {
-      alert('❌ Failed to save configuration');
+      alert(' Failed to save configuration');
       console.error('Save error:', error);
     } finally {
       setSaving(false);
@@ -390,7 +390,7 @@ function AdminDashboard() {
             marginBottom: '30px',
             boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
           }}>
-            <h2 style={{ marginBottom: '20px', color: '#2c3e50' }}>📦 Available Components</h2>
+            <h2 style={{ marginBottom: '20px', color: '#2c3e50' }}> Available Components</h2>
             <div style={{ 
               display: 'grid', 
               gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', 
@@ -573,7 +573,7 @@ function AdminDashboard() {
               marginRight: '15px'
             }}
           >
-            {saving ? '⏳ Saving...' : '💾 Save Configuration'}
+            {saving ? ' Saving...' : ' Save Configuration'}
           </button>
 
           <button 
@@ -594,7 +594,7 @@ function AdminDashboard() {
               transition: 'all 0.3s ease'
             }}
           >
-            🔄 Reset to Default
+             Reset to Default
           </button>
 
           {(config[2].length === 0 || config[3].length === 0) && (
@@ -604,7 +604,7 @@ function AdminDashboard() {
               fontSize: '16px',
               fontWeight: 'bold'
             }}>
-              ⚠️ Each page must have at least one component!
+               Each page must have at least one component!
             </div>
           )}
         </div>
@@ -665,7 +665,7 @@ function AdminDashboard() {
                 e.target.style.color = '#3498db';
               }}
             >
-              📊 View Data →
+               View Data →
             </Link>
           </nav>
         </div>
