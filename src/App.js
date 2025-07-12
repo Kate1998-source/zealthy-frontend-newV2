@@ -6,6 +6,7 @@ import AddressComponent from './components/form-components/AddressComponent';
 import BirthdateComponent from './components/form-components/BirthdateComponent';
 import AdminDashboard from './components/AdminDashboard';
 import DataTable from './components/DataTable';
+import APIDebugTest from './components/APIDebugTest';
 import './App.css';
 
 function OnboardingWizard() {
@@ -440,8 +441,11 @@ function OnboardingWizard() {
             <Link to="/admin" style={{ color: '#007bff', textDecoration: 'none', marginRight: '20px' }}>
               🔧 Admin Dashboard
             </Link>
-            <Link to="/data" style={{ color: '#007bff', textDecoration: 'none' }}>
+            <Link to="/data" style={{ color: '#007bff', textDecoration: 'none', marginRight: '20px' }}>
               📊 View Data
+            </Link>
+            <Link to="/debug" style={{ color: '#ff6b35', textDecoration: 'none', marginRight: '20px' }}>
+              🔧 Debug API
             </Link>
             {currentStep > 1 && (
               <>
@@ -475,6 +479,7 @@ function App() {
         <Route path="/" element={<OnboardingWizard />} />
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/data" element={<DataTable />} />
+        <Route path="/debug" element={<APIDebugTest />} />
       </Routes>
     </Router>
   );
