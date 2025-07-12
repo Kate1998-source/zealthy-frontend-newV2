@@ -370,7 +370,7 @@ function AdminDashboard() {
             marginBottom: '10px',
             color: '#2c3e50'
           }}>
-            🔧 Admin Dashboard
+             Admin Dashboard
           </h1>
           <p style={{ 
             fontSize: '18px', 
@@ -429,7 +429,7 @@ function AdminDashboard() {
               alignItems: 'center',
               gap: '10px'
             }}>
-              📄 Page 2
+               Page 2
               <span style={{ 
                 fontSize: '14px',
                 backgroundColor: '#3498db',
@@ -476,7 +476,7 @@ function AdminDashboard() {
               alignItems: 'center',
               gap: '10px'
             }}>
-              📄 Page 3
+               Page 3
               <span style={{ 
                 fontSize: '14px',
                 backgroundColor: '#27ae60',
@@ -518,7 +518,7 @@ function AdminDashboard() {
           marginBottom: '30px',
           boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
         }}>
-          <h2 style={{ marginBottom: '20px', color: '#2c3e50' }}>📊 Current Configuration</h2>
+          <h2 style={{ marginBottom: '20px', color: '#2c3e50' }}> Current Configuration</h2>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
             <div>
               <h3 style={{ color: '#3498db', marginBottom: '10px' }}>Page 2 Components:</h3>
