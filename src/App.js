@@ -1,40 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { getAdminConfig, checkEmailExists, registerCompleteUser } from './api';
 import AdminDashboard from './components/AdminDashboard';
 import DataTable from './components/DataTable';
 import './App.css';
-
-// Mock API functions (replace with your actual API)
-const mockAPI = {
-  getAdminConfig: async () => {
-    const saved = localStorage.getItem('admin_config');
-    if (saved) {
-      return JSON.parse(saved);
-    }
-    return { 2: ['ABOUT_ME', 'ADDRESS'], 3: ['BIRTHDATE'] };
-  },
-  
-  checkEmailExists: async (email) => {
-    // Simulate checking if email exists
-    const existingEmails = JSON.parse(localStorage.getItem('existing_emails') || '[]');
-    return existingEmails.includes(email);
-  },
-  
-  registerCompleteUser: async (userData) => {
-    // Simulate user registration
-    const users = JSON.parse(localStorage.getItem('registered_users') || '[]');
-    const newUser = { ...userData, id: Date.now() };
-    users.push(newUser);
-    localStorage.setItem('registered_users', JSON.stringify(users));
-    
-    // Add email to existing emails
-    const existingEmails = JSON.parse(localStorage.getItem('existing_emails') || '[]');
-    existingEmails.push(userData.email);
-    localStorage.setItem('existing_emails', JSON.stringify(existingEmails));
-    
-    return newUser;
-  }
-};
 
 // Form Components
 function AboutMeComponent({ value, onChange }) {
@@ -183,7 +152,7 @@ function OnboardingWizard() {
 
   const loadAdminConfig = async () => {
     try {
-      const config = await mockAPI.getAdminConfig();
+      const config = await getAdminConfig();
       setAdminConfig(config);
       console.log('Admin config loaded:', config);
     } catch (error) {
@@ -229,7 +198,7 @@ function OnboardingWizard() {
     console.log('Step 1 submit:', email);
 
     try {
-      const emailExists = await mockAPI.checkEmailExists(email);
+      const emailExists = await checkEmailExists(email);
       if (emailExists) {
         setError('❌ This email is already registered. Please use a different email.');
         return;
@@ -285,7 +254,7 @@ function OnboardingWizard() {
 
       console.log('Sending to backend:', completeUserData);
 
-      const result = await mockAPI.registerCompleteUser(completeUserData);
+      const result = await registerCompleteUser(completeUserData);
       console.log('Registration successful:', result);
       
       alert(`🎉 Registration Complete! User ID: ${result.id}`);
