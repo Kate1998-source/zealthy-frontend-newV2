@@ -1,10 +1,10 @@
-// src/components/OnboardingWizard/EmailPasswordStep.js - Enhanced with validation summary
+// src/components/OnboardingWizard/FirstStep.js
 import React, { useState } from 'react';
 import { checkEmailExists } from '../../api';
 import { User } from '../../models/User';
-import WizardNavigation from './WizardNavigation';
+import WizardNavigation from '../navigation/WizardNavigation';
 
-function EmailPasswordStep({ userData, onNext, onError }) {
+function FirstStep({ userData, onNext, onError }) {
   const [formData, setFormData] = useState({
     email: userData.email || '',
     password: userData.password || ''
@@ -153,7 +153,7 @@ function EmailPasswordStep({ userData, onNext, onError }) {
           currentStep={1}
           onNext={handleSubmit}
           loading={loading}
-          canProceed={true} 
+          canProceed={true} // Always allow clicking, but show errors
           isLastStep={false}
         />
       </form>
@@ -161,4 +161,4 @@ function EmailPasswordStep({ userData, onNext, onError }) {
   );
 }
 
-export default EmailPasswordStep;
+export default FirstStep;

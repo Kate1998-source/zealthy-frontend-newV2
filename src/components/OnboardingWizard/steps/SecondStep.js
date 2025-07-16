@@ -1,12 +1,13 @@
-// src/components/OnboardingWizard/ProfileStep.js - Dynamic validation based on admin config
+// src/components/OnboardingWizard/steps/SecondStep.js
 import React, { useState } from 'react';
-import { User } from '../../models/User';
-import { AdminConfig } from '../../models/AdminConfig';
-import AboutMeComponent from '../form-components/AboutMeComponent';
-import AddressComponent from '../form-components/AddressComponent';
-import WizardNavigation from './WizardNavigation';
+import { User } from '../../../models/User';
+import { AdminConfig } from '../../../models/AdminConfig';
+import AboutMeComponent from '../../form-components/AboutMeComponent';
+import AddressComponent from '../../form-components/AddressComponent';
+import BirthdateComponent from '../../form-components/BirthdateComponent';  // ← ADD THIS
+import WizardNavigation from '../navigation/WizardNavigation';
 
-function ProfileStep({ userData, adminConfig, onNext, onBack, onDataChange }) {
+function SecondStep({ userData, adminConfig, onNext, onBack, onDataChange }) {
   const [errors, setErrors] = useState({});
   const [showValidation, setShowValidation] = useState(false);
 
@@ -33,6 +34,14 @@ function ProfileStep({ userData, adminConfig, onNext, onBack, onDataChange }) {
       const addressValidation = user.validateAddress();
       if (!addressValidation.isValid) {
         Object.assign(validationErrors, addressValidation.errors);
+      }
+    }
+
+    
+    if (components.includes('BIRTHDATE')) {
+      const birthdateValidation = user.validateBirthdate();
+      if (!birthdateValidation.isValid) {
+        validationErrors.birthdate = birthdateValidation.message;
       }
     }
     
@@ -89,7 +98,8 @@ function ProfileStep({ userData, adminConfig, onNext, onBack, onDataChange }) {
       streetAddress: 'Street Address', 
       city: 'City',
       state: 'State',
-      zip: 'ZIP Code'
+      zip: 'ZIP Code',
+      birthdate: 'Birthdate'  
     };
     return displayNames[field] || field;
   };
@@ -141,6 +151,16 @@ function ProfileStep({ userData, adminConfig, onNext, onBack, onDataChange }) {
               required={true}
             />
           );
+        case 'BIRTHDATE':  
+          return (
+            <BirthdateComponent
+              key="birthdate"
+              value={userData.birthdate || ''}
+              onChange={handleDataChange}
+              error={errors.birthdate}
+              required={true}
+            />
+          );
         default:
           return null;
       }
@@ -151,12 +171,14 @@ function ProfileStep({ userData, adminConfig, onNext, onBack, onDataChange }) {
     const config = new AdminConfig(adminConfig);
     const components = config.getComponentsForPage(2);
     
-    if (components.includes('ABOUT_ME') && components.includes('ADDRESS')) {
+    if (components.length > 1) {
       return "All fields are required. Your progress is automatically saved.";
     } else if (components.includes('ABOUT_ME')) {
       return "Tell us about yourself. Your progress is automatically saved.";
     } else if (components.includes('ADDRESS')) {
       return "Please provide your address information. Your progress is automatically saved.";
+    } else if (components.includes('BIRTHDATE')) {
+      return "Please provide your birthdate. Your progress is automatically saved.";
     } else {
       return "Your progress is automatically saved.";
     }
@@ -190,4 +212,4 @@ function ProfileStep({ userData, adminConfig, onNext, onBack, onDataChange }) {
   );
 }
 
-export default ProfileStep;
+export default SecondStep;

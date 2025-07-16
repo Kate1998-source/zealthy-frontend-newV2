@@ -1,14 +1,14 @@
-// src/components/OnboardingWizard/FinalStep.js - Dynamic validation based on admin config
+
 import React, { useState } from 'react';
 import { registerCompleteUser } from '../../api';
 import { User } from '../../models/User';
 import { AdminConfig } from '../../models/AdminConfig';
-import BirthdateComponent from '../form-components/BirthdateComponent';
-import AboutMeComponent from '../form-components/AboutMeComponent';
-import AddressComponent from '../form-components/AddressComponent';
-import WizardNavigation from './WizardNavigation';
+import BirthdateComponent from '../../form-components/BirthdateComponent';
+import AboutMeComponent from '../../form-components/AboutMeComponent';
+import AddressComponent from '../../form-components/AddressComponent';
+import WizardNavigation from '../navigation/WizardNavigation';
 
-function FinalStep({ userData, adminConfig, onBack, onDataChange, onComplete, onError }) {
+function ThirdStep({ userData, adminConfig, onBack, onDataChange, onComplete, onError }) {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [showValidation, setShowValidation] = useState(false);
@@ -93,7 +93,7 @@ function FinalStep({ userData, adminConfig, onBack, onDataChange, onComplete, on
 
     return (
       <div className="validation-summary">
-        <h4> Please fix the following issues before completing registration:</h4>
+        <h4>Please fix the following issues before completing registration:</h4>
         <ul>
           {errorFields.map(([field, message]) => (
             <li key={field}>
@@ -238,4 +238,4 @@ function FinalStep({ userData, adminConfig, onBack, onDataChange, onComplete, on
   );
 }
 
-export default FinalStep;
+export default ThirdStep;

@@ -3,9 +3,9 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getAdminConfig } from '../../api';
 import { User } from '../../models/User';
-import EmailPasswordStep from './EmailPasswordStep';
-import ProfileStep from './ProfileStep';
-import FinalStep from './FinalStep';
+import FirstStep from './steps/FirstStep';
+import SecondStep from './steps/SecondStep'; 
+import ThirdStep from './steps/ThirdStep';
 import './OnboardingWizard.css';
 
 function OnboardingWizard() {
@@ -106,7 +106,7 @@ function OnboardingWizard() {
     switch (currentStep) {
       case 1:
         return (
-          <EmailPasswordStep
+          <FirstStep
             userData={userData}
             onNext={handleStepNext}
             onError={setError}
@@ -114,7 +114,7 @@ function OnboardingWizard() {
         );
       case 2:
         return (
-          <ProfileStep
+          <SecondStep
             userData={userData}
             adminConfig={adminConfig}
             onNext={() => setCurrentStep(3)}
@@ -124,7 +124,7 @@ function OnboardingWizard() {
         );
       case 3:
         return (
-          <FinalStep
+          <ThirdStep
             userData={userData}
             adminConfig={adminConfig}
             onBack={handleStepBack}
