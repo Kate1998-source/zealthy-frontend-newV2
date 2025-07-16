@@ -1,4 +1,4 @@
-// src/components/OnboardingWizard/EmailPasswordStep.js
+// src/components/OnboardingWizard/EmailPasswordStep.js - Enhanced with validation summary
 import React, { useState } from 'react';
 import { checkEmailExists } from '../../api';
 import { User } from '../../models/User';
@@ -11,9 +11,11 @@ function EmailPasswordStep({ userData, onNext, onError }) {
   });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [showValidation, setShowValidation] = useState(false);
 
   const handleSubmit = async (e) => {
     if (e) e.preventDefault();
+    setShowValidation(true);
     setLoading(true);
     setErrors({});
     onError(''); // Clear previous errors
@@ -25,6 +27,8 @@ function EmailPasswordStep({ userData, onNext, onError }) {
     if (!validation.isValid) {
       setErrors(validation.errors);
       setLoading(false);
+      // Scroll to top to show errors
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
 
@@ -32,10 +36,13 @@ function EmailPasswordStep({ userData, onNext, onError }) {
       const emailExists = await checkEmailExists(formData.email);
       if (emailExists) {
         setErrors({ email: 'This email is already registered. Please use a different email.' });
+        setLoading(false);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
         return;
       }
 
       // Pass data to parent
+      setShowValidation(false);
       onNext({ ...userData, ...formData });
       
     } catch (error) {
@@ -54,7 +61,38 @@ function EmailPasswordStep({ userData, onNext, onError }) {
     }
   };
 
-  const canProceed = formData.email && formData.password && formData.password.length >= 6;
+  const renderValidationSummary = () => {
+    if (!showValidation || Object.keys(errors).length === 0) {
+      return null;
+    }
+
+    const errorFields = Object.entries(errors).filter(([key, value]) => value !== null);
+    
+    if (errorFields.length === 0) {
+      return null;
+    }
+
+    return (
+      <div className="validation-summary">
+        <h4>⚠️ Please fix the following issues:</h4>
+        <ul>
+          {errorFields.map(([field, message]) => (
+            <li key={field}>
+              <strong>{getFieldDisplayName(field)}:</strong> {message}
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  };
+
+  const getFieldDisplayName = (field) => {
+    const displayNames = {
+      email: 'Email Address',
+      password: 'Password'
+    };
+    return displayNames[field] || field;
+  };
 
   return (
     <div className="step-container">
@@ -64,6 +102,9 @@ function EmailPasswordStep({ userData, onNext, onError }) {
           We'll check if your email is available before proceeding
         </p>
       </div>
+
+      {/* Validation Summary */}
+      {renderValidationSummary()}
       
       <form onSubmit={handleSubmit} className="wizard-form">
         <div className="form-field">
@@ -103,13 +144,16 @@ function EmailPasswordStep({ userData, onNext, onError }) {
               {errors.password}
             </div>
           )}
+          <div className="help-text">
+            Password must be at least 6 characters long
+          </div>
         </div>
         
         <WizardNavigation
           currentStep={1}
           onNext={handleSubmit}
           loading={loading}
-          canProceed={canProceed}
+          canProceed={true} 
           isLastStep={false}
         />
       </form>
