@@ -1,6 +1,8 @@
+// src/components/form-components/AboutMeComponent.js
 import React from 'react';
+import './FormComponents.css';
 
-function AboutMeComponent({ value, onChange }) {
+function AboutMeComponent({ value, onChange, error }) {
   return (
     <div className="form-component">
       <h3>📝 About Me</h3>
@@ -9,15 +11,19 @@ function AboutMeComponent({ value, onChange }) {
         onChange={(e) => onChange('aboutMe', e.target.value)}
         placeholder="Tell us about yourself..."
         rows="4"
-        cols="50"
-        style={{
-          width: '100%',
-          padding: '10px',
-          borderRadius: '5px',
-          border: '1px solid #ccc',
-          fontSize: '16px'
-        }}
+        maxLength={500}
+        className={`form-textarea ${error ? 'error' : ''}`}
       />
+      <div className="character-counter">
+        {error && (
+          <div className="error-message">
+            {error}
+          </div>
+        )}
+        <div className="counter-text">
+          {(value || '').length}/500 characters
+        </div>
+      </div>
     </div>
   );
 }

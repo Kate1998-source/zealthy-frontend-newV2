@@ -1,39 +1,73 @@
+// src/components/form-components/AddressComponent.js
 import React from 'react';
+import './FormComponents.css';
 
-function AddressComponent({ values, onChange }) {
+function AddressComponent({ values, onChange, errors = {} }) {
   return (
     <div className="form-component">
       <h3>🏠 Address Information</h3>
-      <div style={{ display: 'grid', gap: '10px' }}>
-        <input
-          type="text"
-          value={values?.streetAddress || ''}
-          onChange={(e) => onChange('streetAddress', e.target.value)}
-          placeholder="Street Address"
-          style={{ padding: '10px', borderRadius: '5px', border: '1px solid #ccc' }}
-        />
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }}>
+      <div className="address-grid">
+        <div className="field-container">
           <input
             type="text"
-            value={values?.city || ''}
-            onChange={(e) => onChange('city', e.target.value)}
-            placeholder="City"
-            style={{ padding: '10px', borderRadius: '5px', border: '1px solid #ccc' }}
+            value={values?.streetAddress || ''}
+            onChange={(e) => onChange('streetAddress', e.target.value)}
+            placeholder="Street Address"
+            className={`form-input ${errors.streetAddress ? 'error' : ''}`}
           />
-          <input
-            type="text"
-            value={values?.state || ''}
-            onChange={(e) => onChange('state', e.target.value)}
-            placeholder="State"
-            style={{ padding: '10px', borderRadius: '5px', border: '1px solid #ccc' }}
-          />
-          <input
-            type="text"
-            value={values?.zip || ''}
-            onChange={(e) => onChange('zip', e.target.value)}
-            placeholder="ZIP"
-            style={{ padding: '10px', borderRadius: '5px', border: '1px solid #ccc' }}
-          />
+          {errors.streetAddress && (
+            <div className="error-message">
+              {errors.streetAddress}
+            </div>
+          )}
+        </div>
+        
+        <div className="address-row">
+          <div className="field-container">
+            <input
+              type="text"
+              value={values?.city || ''}
+              onChange={(e) => onChange('city', e.target.value)}
+              placeholder="City"
+              className={`form-input ${errors.city ? 'error' : ''}`}
+            />
+            {errors.city && (
+              <div className="error-message small">
+                {errors.city}
+              </div>
+            )}
+          </div>
+          
+          <div className="field-container">
+            <input
+              type="text"
+              value={values?.state || ''}
+              onChange={(e) => onChange('state', e.target.value)}
+              placeholder="State"
+              maxLength={2}
+              className={`form-input ${errors.state ? 'error' : ''}`}
+            />
+            {errors.state && (
+              <div className="error-message small">
+                {errors.state}
+              </div>
+            )}
+          </div>
+          
+          <div className="field-container">
+            <input
+              type="text"
+              value={values?.zip || ''}
+              onChange={(e) => onChange('zip', e.target.value)}
+              placeholder="ZIP"
+              className={`form-input ${errors.zip ? 'error' : ''}`}
+            />
+            {errors.zip && (
+              <div className="error-message small">
+                {errors.zip}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

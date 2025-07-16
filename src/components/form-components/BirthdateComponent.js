@@ -1,6 +1,12 @@
+// src/components/form-components/BirthdateComponent.js
 import React from 'react';
+import './FormComponents.css';
 
-function BirthdateComponent({ value, onChange }) {
+function BirthdateComponent({ value, onChange, error }) {
+  const maxDate = new Date();
+  maxDate.setFullYear(maxDate.getFullYear() - 13);
+  const maxDateString = maxDate.toISOString().split('T')[0];
+
   return (
     <div className="form-component">
       <h3>🎂 Birthdate</h3>
@@ -8,14 +14,15 @@ function BirthdateComponent({ value, onChange }) {
         type="date"
         value={value || ''}
         onChange={(e) => onChange('birthdate', e.target.value)}
-        style={{
-          padding: '10px',
-          borderRadius: '5px',
-          border: '1px solid #ccc',
-          fontSize: '16px',
-          width: '200px'
-        }}
+        max={maxDateString}
+        className={`form-input ${error ? 'error' : ''}`}
+        style={{ width: '200px' }}
       />
+      {error && (
+        <div className="error-message">
+          {error}
+        </div>
+      )}
     </div>
   );
 }
