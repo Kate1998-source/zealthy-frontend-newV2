@@ -1,4 +1,3 @@
-// src/components/OnboardingWizard/ProfileStep.js - Enhanced with required field validation
 import React, { useState } from 'react';
 import { User } from '../../models/User';
 import { AdminConfig } from '../../models/AdminConfig';
@@ -8,33 +7,72 @@ import WizardNavigation from './WizardNavigation';
 
 function ProfileStep({ userData, adminConfig, onNext, onBack, onDataChange }) {
   const [errors, setErrors] = useState({});
+  const [showValidation, setShowValidation] = useState(false);
 
   const handleNext = () => {
+    setShowValidation(true);
+    
     // Validate step 2 data
     const user = new User(userData);
     const validation = user.validateStep(2);
 
     if (!validation.isValid) {
       setErrors(validation.errors);
+      
+      // Scroll to top to show errors
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
 
+    // If validation passes, proceed
     setErrors({});
+    setShowValidation(false);
     onNext();
   };
 
   const handleDataChange = (field, value) => {
     onDataChange(field, value);
+    
     // Clear error when user starts typing
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: null }));
     }
   };
 
-  // Check if user can proceed (all required fields filled)
-  const canProceed = () => {
-    const user = new User(userData);
-    return user.hasRequiredDataForStep(2);
+  const renderValidationSummary = () => {
+    if (!showValidation || Object.keys(errors).length === 0) {
+      return null;
+    }
+
+    const errorFields = Object.entries(errors).filter(([key, value]) => value !== null);
+    
+    if (errorFields.length === 0) {
+      return null;
+    }
+
+    return (
+      <div className="validation-summary">
+        <h4>⚠️ Please fix the following issues:</h4>
+        <ul>
+          {errorFields.map(([field, message]) => (
+            <li key={field}>
+              <strong>{getFieldDisplayName(field)}:</strong> {message}
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  };
+
+  const getFieldDisplayName = (field) => {
+    const displayNames = {
+      aboutMe: 'About Me',
+      streetAddress: 'Street Address', 
+      city: 'City',
+      state: 'State',
+      zip: 'ZIP Code'
+    };
+    return displayNames[field] || field;
   };
 
   const renderComponents = () => {
@@ -97,6 +135,9 @@ function ProfileStep({ userData, adminConfig, onNext, onBack, onDataChange }) {
           All fields are required. Your progress is automatically saved.
         </p>
       </div>
+
+      {/* Validation Summary */}
+      {renderValidationSummary()}
       
       <div className="components-container">
         {renderComponents()}
@@ -107,7 +148,7 @@ function ProfileStep({ userData, adminConfig, onNext, onBack, onDataChange }) {
         onBack={onBack}
         onNext={handleNext}
         loading={false}
-        canProceed={canProceed()}
+        canProceed={true} // Always allow clicking, but show errors
         isLastStep={false}
       />
     </div>

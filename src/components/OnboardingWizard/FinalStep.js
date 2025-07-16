@@ -1,4 +1,4 @@
-// src/components/OnboardingWizard/FinalStep.js
+// src/components/OnboardingWizard/FinalStep.js - Show errors instead of blocking
 import React, { useState } from 'react';
 import { registerCompleteUser } from '../../api';
 import { User } from '../../models/User';
@@ -11,8 +11,10 @@ import WizardNavigation from './WizardNavigation';
 function FinalStep({ userData, adminConfig, onBack, onDataChange, onComplete, onError }) {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [showValidation, setShowValidation] = useState(false);
 
   const handleComplete = async () => {
+    setShowValidation(true);
     setLoading(true);
     setErrors({});
     onError(''); // Clear previous errors
@@ -24,6 +26,9 @@ function FinalStep({ userData, adminConfig, onBack, onDataChange, onComplete, on
     if (!validation.isValid) {
       setErrors(validation.errors);
       setLoading(false);
+      
+      // Scroll to top to show errors
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
 
@@ -50,6 +55,43 @@ function FinalStep({ userData, adminConfig, onBack, onDataChange, onComplete, on
     }
   };
 
+  const renderValidationSummary = () => {
+    if (!showValidation || Object.keys(errors).length === 0) {
+      return null;
+    }
+
+    const errorFields = Object.entries(errors).filter(([key, value]) => value !== null);
+    
+    if (errorFields.length === 0) {
+      return null;
+    }
+
+    return (
+      <div className="validation-summary">
+        <h4>⚠️ Please fix the following issues before completing registration:</h4>
+        <ul>
+          {errorFields.map(([field, message]) => (
+            <li key={field}>
+              <strong>{getFieldDisplayName(field)}:</strong> {message}
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  };
+
+  const getFieldDisplayName = (field) => {
+    const displayNames = {
+      birthdate: 'Birthdate',
+      aboutMe: 'About Me',
+      streetAddress: 'Street Address',
+      city: 'City', 
+      state: 'State',
+      zip: 'ZIP Code'
+    };
+    return displayNames[field] || field;
+  };
+
   const renderComponents = () => {
     const config = new AdminConfig(adminConfig);
     const components = config.getComponentsForPage(3);
@@ -62,6 +104,7 @@ function FinalStep({ userData, adminConfig, onBack, onDataChange, onComplete, on
           value={userData.birthdate || ''}
           onChange={handleDataChange}
           error={errors.birthdate}
+          required={true}
         />
       ];
     }
@@ -75,6 +118,7 @@ function FinalStep({ userData, adminConfig, onBack, onDataChange, onComplete, on
               value={userData.birthdate || ''}
               onChange={handleDataChange}
               error={errors.birthdate}
+              required={true}
             />
           );
         case 'ABOUT_ME':
@@ -84,6 +128,7 @@ function FinalStep({ userData, adminConfig, onBack, onDataChange, onComplete, on
               value={userData.aboutMe || ''}
               onChange={handleDataChange}
               error={errors.aboutMe}
+              required={true}
             />
           );
         case 'ADDRESS':
@@ -93,6 +138,7 @@ function FinalStep({ userData, adminConfig, onBack, onDataChange, onComplete, on
               values={userData}
               onChange={handleDataChange}
               errors={errors}
+              required={true}
             />
           );
         default:
@@ -109,6 +155,9 @@ function FinalStep({ userData, adminConfig, onBack, onDataChange, onComplete, on
           Complete your registration to save all data
         </p>
       </div>
+
+      {/* Validation Summary */}
+      {renderValidationSummary()}
       
       <div className="components-container">
         {renderComponents()}
@@ -145,7 +194,7 @@ function FinalStep({ userData, adminConfig, onBack, onDataChange, onComplete, on
         onBack={onBack}
         onComplete={handleComplete}
         loading={loading}
-        canProceed={true}
+        canProceed={true} // Always allow clicking, but show errors
         isLastStep={true}
       />
     </div>
