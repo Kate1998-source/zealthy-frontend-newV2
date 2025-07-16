@@ -1,3 +1,4 @@
+// src/components/OnboardingWizard/ProfileStep.js - Dynamic validation based on admin config
 import React, { useState } from 'react';
 import { User } from '../../models/User';
 import { AdminConfig } from '../../models/AdminConfig';
@@ -12,14 +13,32 @@ function ProfileStep({ userData, adminConfig, onNext, onBack, onDataChange }) {
   const handleNext = () => {
     setShowValidation(true);
     
-    // Validate step 2 data
+    // Get which components are configured for this page
+    const config = new AdminConfig(adminConfig);
+    const components = config.getComponentsForPage(2);
+    
+    // Only validate the components that are actually on this page
+    const validationErrors = {};
     const user = new User(userData);
-    const validation = user.validateStep(2);
-
-    if (!validation.isValid) {
-      setErrors(validation.errors);
-      
-      // Scroll to top to show errors
+    
+    // Check each configured component
+    if (components.includes('ABOUT_ME')) {
+      const aboutMeValidation = user.validateAboutMe();
+      if (!aboutMeValidation.isValid) {
+        validationErrors.aboutMe = aboutMeValidation.message;
+      }
+    }
+    
+    if (components.includes('ADDRESS')) {
+      const addressValidation = user.validateAddress();
+      if (!addressValidation.isValid) {
+        Object.assign(validationErrors, addressValidation.errors);
+      }
+    }
+    
+    // If there are validation errors, show them
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
@@ -99,6 +118,7 @@ function ProfileStep({ userData, adminConfig, onNext, onBack, onDataChange }) {
       ];
     }
     
+    // Render only the configured components
     return components.map(componentType => {
       switch (componentType) {
         case 'ABOUT_ME':
@@ -127,12 +147,27 @@ function ProfileStep({ userData, adminConfig, onNext, onBack, onDataChange }) {
     });
   };
 
+  const getPageDescription = () => {
+    const config = new AdminConfig(adminConfig);
+    const components = config.getComponentsForPage(2);
+    
+    if (components.includes('ABOUT_ME') && components.includes('ADDRESS')) {
+      return "All fields are required. Your progress is automatically saved.";
+    } else if (components.includes('ABOUT_ME')) {
+      return "Tell us about yourself. Your progress is automatically saved.";
+    } else if (components.includes('ADDRESS')) {
+      return "Please provide your address information. Your progress is automatically saved.";
+    } else {
+      return "Your progress is automatically saved.";
+    }
+  };
+
   return (
     <div>
       <div className="step-header">
         <h2 className="step-title">Tell Us About Yourself</h2>
         <p className="step-subtitle">
-          All fields are required. Your progress is automatically saved.
+          {getPageDescription()}
         </p>
       </div>
 

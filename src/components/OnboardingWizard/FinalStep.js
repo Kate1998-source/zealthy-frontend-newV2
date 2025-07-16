@@ -1,4 +1,4 @@
-// src/components/OnboardingWizard/FinalStep.js - Show errors instead of blocking
+// src/components/OnboardingWizard/FinalStep.js - Dynamic validation based on admin config
 import React, { useState } from 'react';
 import { registerCompleteUser } from '../../api';
 import { User } from '../../models/User';
@@ -19,15 +19,40 @@ function FinalStep({ userData, adminConfig, onBack, onDataChange, onComplete, on
     setErrors({});
     onError(''); // Clear previous errors
 
-    // Validate step 3 data
+    // Get which components are configured for this page
+    const config = new AdminConfig(adminConfig);
+    const components = config.getComponentsForPage(3);
+    
+    // Only validate the components that are actually on this page
+    const validationErrors = {};
     const user = new User(userData);
-    const validation = user.validateStep(3);
+    
+    // Check each configured component
+    if (components.includes('BIRTHDATE')) {
+      const birthdateValidation = user.validateBirthdate();
+      if (!birthdateValidation.isValid) {
+        validationErrors.birthdate = birthdateValidation.message;
+      }
+    }
+    
+    if (components.includes('ABOUT_ME')) {
+      const aboutMeValidation = user.validateAboutMe();
+      if (!aboutMeValidation.isValid) {
+        validationErrors.aboutMe = aboutMeValidation.message;
+      }
+    }
+    
+    if (components.includes('ADDRESS')) {
+      const addressValidation = user.validateAddress();
+      if (!addressValidation.isValid) {
+        Object.assign(validationErrors, addressValidation.errors);
+      }
+    }
 
-    if (!validation.isValid) {
-      setErrors(validation.errors);
+    // If there are validation errors, show them
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
       setLoading(false);
-      
-      // Scroll to top to show errors
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
@@ -68,7 +93,7 @@ function FinalStep({ userData, adminConfig, onBack, onDataChange, onComplete, on
 
     return (
       <div className="validation-summary">
-        <h4>⚠️ Please fix the following issues before completing registration:</h4>
+        <h4> Please fix the following issues before completing registration:</h4>
         <ul>
           {errorFields.map(([field, message]) => (
             <li key={field}>
@@ -109,6 +134,7 @@ function FinalStep({ userData, adminConfig, onBack, onDataChange, onComplete, on
       ];
     }
     
+    // Render only the configured components
     return components.map(componentType => {
       switch (componentType) {
         case 'BIRTHDATE':
@@ -147,12 +173,23 @@ function FinalStep({ userData, adminConfig, onBack, onDataChange, onComplete, on
     });
   };
 
+  const getPageDescription = () => {
+    const config = new AdminConfig(adminConfig);
+    const components = config.getComponentsForPage(3);
+    
+    if (components.length === 1 && components.includes('BIRTHDATE')) {
+      return "Please provide your birthdate to complete registration";
+    } else {
+      return "Complete your registration to save all data";
+    }
+  };
+
   return (
     <div>
       <div className="step-header">
         <h2 className="step-title">Almost Done!</h2>
         <p className="step-subtitle">
-          Complete your registration to save all data
+          {getPageDescription()}
         </p>
       </div>
 
