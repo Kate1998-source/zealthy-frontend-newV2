@@ -1,4 +1,4 @@
-// src/components/OnboardingWizard/ProfileStep.js
+// src/components/OnboardingWizard/ProfileStep.js - Enhanced with required field validation
 import React, { useState } from 'react';
 import { User } from '../../models/User';
 import { AdminConfig } from '../../models/AdminConfig';
@@ -31,6 +31,12 @@ function ProfileStep({ userData, adminConfig, onNext, onBack, onDataChange }) {
     }
   };
 
+  // Check if user can proceed (all required fields filled)
+  const canProceed = () => {
+    const user = new User(userData);
+    return user.hasRequiredDataForStep(2);
+  };
+
   const renderComponents = () => {
     const config = new AdminConfig(adminConfig);
     const components = config.getComponentsForPage(2);
@@ -43,12 +49,14 @@ function ProfileStep({ userData, adminConfig, onNext, onBack, onDataChange }) {
           value={userData.aboutMe || ''}
           onChange={handleDataChange}
           error={errors.aboutMe}
+          required={true}
         />,
         <AddressComponent
           key="address"
           values={userData}
           onChange={handleDataChange}
           errors={errors}
+          required={true}
         />
       ];
     }
@@ -62,6 +70,7 @@ function ProfileStep({ userData, adminConfig, onNext, onBack, onDataChange }) {
               value={userData.aboutMe || ''}
               onChange={handleDataChange}
               error={errors.aboutMe}
+              required={true}
             />
           );
         case 'ADDRESS':
@@ -71,6 +80,7 @@ function ProfileStep({ userData, adminConfig, onNext, onBack, onDataChange }) {
               values={userData}
               onChange={handleDataChange}
               errors={errors}
+              required={true}
             />
           );
         default:
@@ -84,7 +94,7 @@ function ProfileStep({ userData, adminConfig, onNext, onBack, onDataChange }) {
       <div className="step-header">
         <h2 className="step-title">Tell Us About Yourself</h2>
         <p className="step-subtitle">
-          Your progress is automatically saved
+          All fields are required. Your progress is automatically saved.
         </p>
       </div>
       
@@ -97,7 +107,7 @@ function ProfileStep({ userData, adminConfig, onNext, onBack, onDataChange }) {
         onBack={onBack}
         onNext={handleNext}
         loading={false}
-        canProceed={true} // Step 2 fields are optional
+        canProceed={canProceed()}
         isLastStep={false}
       />
     </div>

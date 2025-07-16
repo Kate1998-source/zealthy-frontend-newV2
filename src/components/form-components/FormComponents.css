@@ -1,4 +1,4 @@
-/* src/components/form-components/FormComponents.css */
+/* src/components/form-components/FormComponents.css - Enhanced with required field styling */
 
 .form-component {
   background-color: white;
@@ -14,6 +14,13 @@
   font-size: 18px;
   font-weight: 600;
   color: #374151;
+}
+
+/* Required Field Asterisk */
+.required-asterisk {
+  color: #dc2626;
+  font-weight: bold;
+  margin-left: 4px;
 }
 
 /* Input Styles */
@@ -36,6 +43,14 @@
   border: 2px solid #dc2626;
 }
 
+.form-input:required {
+  border-left: 3px solid #3b82f6;
+}
+
+.form-input:required.error {
+  border-left: 3px solid #dc2626;
+}
+
 /* Textarea Styles */
 .form-textarea {
   width: 100%;
@@ -56,6 +71,14 @@
 
 .form-textarea.error {
   border: 2px solid #dc2626;
+}
+
+.form-textarea:required {
+  border-left: 3px solid #3b82f6;
+}
+
+.form-textarea:required.error {
+  border-left: 3px solid #dc2626;
 }
 
 /* Address Grid */
@@ -104,6 +127,22 @@
 
 .field-container:last-child {
   margin-bottom: 0;
+}
+
+/* Required Field Indicator */
+.form-component.required {
+  border-left: 4px solid #3b82f6;
+}
+
+/* Empty Required Field Warning */
+.form-input:required:invalid,
+.form-textarea:required:invalid {
+  border-color: #fbbf24;
+}
+
+.form-input:required:valid,
+.form-textarea:required:valid {
+  border-left-color: #10b981;
 }
 
 /* Responsive Design */

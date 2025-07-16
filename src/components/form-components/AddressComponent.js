@@ -1,18 +1,21 @@
-// src/components/form-components/AddressComponent.js
+// src/components/form-components/AddressComponent.js - Enhanced with required validation
 import React from 'react';
 import './FormComponents.css';
 
-function AddressComponent({ values, onChange, errors = {} }) {
+function AddressComponent({ values, onChange, errors = {}, required = false }) {
   return (
     <div className="form-component">
-      <h3>🏠 Address Information</h3>
+      <h3>
+        🏠 Address Information {required && <span className="required-asterisk">*</span>}
+      </h3>
       <div className="address-grid">
         <div className="field-container">
           <input
             type="text"
             value={values?.streetAddress || ''}
             onChange={(e) => onChange('streetAddress', e.target.value)}
-            placeholder="Street Address"
+            placeholder={required ? "Street Address (Required)" : "Street Address"}
+            required={required}
             className={`form-input ${errors.streetAddress ? 'error' : ''}`}
           />
           {errors.streetAddress && (
@@ -28,7 +31,8 @@ function AddressComponent({ values, onChange, errors = {} }) {
               type="text"
               value={values?.city || ''}
               onChange={(e) => onChange('city', e.target.value)}
-              placeholder="City"
+              placeholder={required ? "City (Required)" : "City"}
+              required={required}
               className={`form-input ${errors.city ? 'error' : ''}`}
             />
             {errors.city && (
@@ -43,8 +47,9 @@ function AddressComponent({ values, onChange, errors = {} }) {
               type="text"
               value={values?.state || ''}
               onChange={(e) => onChange('state', e.target.value)}
-              placeholder="State"
+              placeholder={required ? "State (Required)" : "State"}
               maxLength={2}
+              required={required}
               className={`form-input ${errors.state ? 'error' : ''}`}
             />
             {errors.state && (
@@ -59,7 +64,8 @@ function AddressComponent({ values, onChange, errors = {} }) {
               type="text"
               value={values?.zip || ''}
               onChange={(e) => onChange('zip', e.target.value)}
-              placeholder="ZIP"
+              placeholder={required ? "ZIP (Required)" : "ZIP"}
+              required={required}
               className={`form-input ${errors.zip ? 'error' : ''}`}
             />
             {errors.zip && (

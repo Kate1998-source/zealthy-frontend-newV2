@@ -1,4 +1,4 @@
-// src/models/User.js
+// src/models/User.js - Enhanced with required field validation
 export class User {
   constructor(data = {}) {
     this.email = data.email || '';
@@ -26,7 +26,14 @@ export class User {
   }
 
   validateAboutMe() {
-    if (this.aboutMe && this.aboutMe.length > 500) {
+    // Make About Me required
+    if (!this.aboutMe || this.aboutMe.trim() === '') {
+      return { isValid: false, message: 'Please tell us about yourself' };
+    }
+    if (this.aboutMe.length < 10) {
+      return { isValid: false, message: 'Please write at least 10 characters about yourself' };
+    }
+    if (this.aboutMe.length > 500) {
       return { isValid: false, message: 'About me must be 500 characters or less' };
     }
     return { isValid: true };
@@ -35,15 +42,28 @@ export class User {
   validateAddress() {
     const errors = {};
     
-    if (this.streetAddress && this.streetAddress.length < 5) {
+    // Make all address fields required
+    if (!this.streetAddress || this.streetAddress.trim() === '') {
+      errors.streetAddress = 'Street address is required';
+    } else if (this.streetAddress.length < 5) {
       errors.streetAddress = 'Street address must be at least 5 characters';
     }
     
-    if (this.state && this.state.length !== 2) {
+    if (!this.city || this.city.trim() === '') {
+      errors.city = 'City is required';
+    } else if (this.city.length < 2) {
+      errors.city = 'City must be at least 2 characters';
+    }
+    
+    if (!this.state || this.state.trim() === '') {
+      errors.state = 'State is required';
+    } else if (this.state.length !== 2) {
       errors.state = 'State must be 2 characters (e.g., CA)';
     }
     
-    if (this.zip && !/^\d{5}(-\d{4})?$/.test(this.zip)) {
+    if (!this.zip || this.zip.trim() === '') {
+      errors.zip = 'ZIP code is required';
+    } else if (!/^\d{5}(-\d{4})?$/.test(this.zip)) {
       errors.zip = 'ZIP code must be in format 12345 or 12345-6789';
     }
     
@@ -54,7 +74,10 @@ export class User {
   }
 
   validateBirthdate() {
-    if (!this.birthdate) return { isValid: true }; // Optional field
+    // Make birthdate required
+    if (!this.birthdate || this.birthdate.trim() === '') {
+      return { isValid: false, message: 'Birthdate is required' };
+    }
     
     const birthDate = new Date(this.birthdate);
     const today = new Date();
@@ -66,7 +89,7 @@ export class User {
     return { isValid: true };
   }
 
-  // Validate specific step
+  // Validate specific step with required fields
   validateStep(step) {
     switch (step) {
       case 1:
@@ -105,6 +128,24 @@ export class User {
     }
   }
 
+  // Check if step has all required data
+  hasRequiredDataForStep(step) {
+    switch (step) {
+      case 1:
+        return this.email && this.password && this.password.length >= 6;
+      case 2:
+        return this.aboutMe && this.aboutMe.trim() !== '' && 
+               this.streetAddress && this.streetAddress.trim() !== '' &&
+               this.city && this.city.trim() !== '' &&
+               this.state && this.state.trim() !== '' &&
+               this.zip && this.zip.trim() !== '';
+      case 3:
+        return this.birthdate && this.birthdate.trim() !== '';
+      default:
+        return false;
+    }
+  }
+
   // Get user data for API submission
   toAPIFormat() {
     return {
@@ -123,19 +164,5 @@ export class User {
   updateField(field, value) {
     const newData = { ...this, [field]: value };
     return new User(newData);
-  }
-
-  // Check if user has required data for a step
-  hasRequiredDataForStep(step) {
-    switch (step) {
-      case 1:
-        return this.email && this.password;
-      case 2:
-        return true; // Step 2 fields are optional
-      case 3:
-        return true; // Step 3 fields are optional
-      default:
-        return false;
-    }
   }
 }
