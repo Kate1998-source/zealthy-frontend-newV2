@@ -1,4 +1,4 @@
-// src/components/form-components/BirthdateComponent.js - Enhanced with required support
+
 import React from 'react';
 import './FormComponents.css';
 

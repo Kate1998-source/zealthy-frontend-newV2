@@ -1,4 +1,4 @@
-// src/components/form-components/AboutMeComponent.js - Enhanced with required validation
+
 import React from 'react';
 import './FormComponents.css';
 

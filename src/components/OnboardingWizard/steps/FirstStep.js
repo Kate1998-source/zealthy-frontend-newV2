@@ -1,4 +1,3 @@
-// src/components/OnboardingWizard/FirstStep.js
 import React, { useState } from 'react';
 import { checkEmailExists } from '../../api';
 import { User } from '../../models/User';

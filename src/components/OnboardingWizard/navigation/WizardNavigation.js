@@ -1,4 +1,4 @@
-// src/components/OnboardingWizard/WizardNavigation.js
+
 import React from 'react';
 
 function WizardNavigation({ 

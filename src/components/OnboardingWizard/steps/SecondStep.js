@@ -1,10 +1,9 @@
-// src/components/OnboardingWizard/steps/SecondStep.js
 import React, { useState } from 'react';
 import { User } from '../../../models/User';
 import { AdminConfig } from '../../../models/AdminConfig';
 import AboutMeComponent from '../../form-components/AboutMeComponent';
 import AddressComponent from '../../form-components/AddressComponent';
-import BirthdateComponent from '../../form-components/BirthdateComponent';  // ← ADD THIS
+import BirthdateComponent from '../../form-components/BirthdateComponent';  
 import WizardNavigation from '../navigation/WizardNavigation';
 
 function SecondStep({ userData, adminConfig, onNext, onBack, onDataChange }) {
