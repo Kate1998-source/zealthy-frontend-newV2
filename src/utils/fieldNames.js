@@ -1,4 +1,4 @@
-
+// src/utils/fieldNames.js
 export const getFieldDisplayName = (field) => {
   const displayNames = {
     email: 'Email Address',
@@ -8,7 +8,23 @@ export const getFieldDisplayName = (field) => {
     city: 'City',
     state: 'State',
     zip: 'ZIP Code',
-    birthdate: 'Birthdate'
+    birthdate: 'Birthdate',
+    address: 'Address'
   };
   return displayNames[field] || field;
+};
+
+export const getFieldIcon = (field) => {
+  const icons = {
+    email: '📧',
+    password: '🔒',
+    aboutMe: '📝',
+    streetAddress: '🏠',
+    city: '🏙️',
+    state: '📍',
+    zip: '📮',
+    birthdate: '🎂',
+    address: '🏠'
+  };
+  return icons[field] || '📄';
 };

@@ -1,16 +1,21 @@
 import React from 'react';
+import { getFieldDisplayName, getFieldIcon } from '../../utils/fieldNames';
 import './FormComponents.css';
 
 function BirthdateComponent({ value, onChange, error, required = false }) {
+  const fieldName = 'birthdate';
+  const displayName = getFieldDisplayName(fieldName);
+  const icon = getFieldIcon(fieldName);
+
   return (
     <div className="form-component">
       <h3>
-        🎂 Birthdate {required && <span className="required-asterisk">*</span>}
+        {icon} {displayName} {required && <span className="required-asterisk">*</span>}
       </h3>
       <input
         type="date"
         value={value || ''}
-        onChange={(e) => onChange('birthdate', e.target.value)}
+        onChange={(e) => onChange(fieldName, e.target.value)}
         required={required}
         className={`form-input ${error ? 'error' : ''}`}
         style={{ width: '200px' }}
@@ -20,9 +25,9 @@ function BirthdateComponent({ value, onChange, error, required = false }) {
           {error}
         </div>
       )}
-      {required && !value && (
+      {required && !value && !error && (
         <div className="help-text">
-          Please select your birthdate to continue
+          Please select your {displayName.toLowerCase()} to continue
         </div>
       )}
     </div>

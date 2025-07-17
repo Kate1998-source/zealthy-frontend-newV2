@@ -1,79 +1,50 @@
-
 import React from 'react';
+import { getFieldDisplayName, getFieldIcon } from '../../utils/fieldNames';
+import { getFieldPlaceholder } from '../../utils/validationUtils';
 import './FormComponents.css';
 
 function AddressComponent({ values, onChange, errors = {}, required = false }) {
+  const renderField = (fieldKey, isFullWidth = false, maxLength = null) => {
+    const placeholder = getFieldPlaceholder(fieldKey, required);
+    const error = errors[fieldKey];
+    const value = values?.[fieldKey] || '';
+
+    return (
+      <div key={fieldKey} className="field-container">
+        <input
+          type="text"
+          value={value}
+          onChange={(e) => onChange(fieldKey, e.target.value)}
+          placeholder={placeholder}
+          maxLength={maxLength}
+          required={required}
+          className={`form-input ${error ? 'error' : ''}`}
+        />
+        {error && (
+          <div className={`error-message ${isFullWidth ? '' : 'small'}`}>
+            {error}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  const addressIcon = getFieldIcon('address');
+
   return (
     <div className="form-component">
       <h3>
-        🏠 Address Information {required && <span className="required-asterisk">*</span>}
+        {addressIcon} Address Information {required && <span className="required-asterisk">*</span>}
       </h3>
       <div className="address-grid">
-        <div className="field-container">
-          <input
-            type="text"
-            value={values?.streetAddress || ''}
-            onChange={(e) => onChange('streetAddress', e.target.value)}
-            placeholder={required ? "Street Address (Required)" : "Street Address"}
-            required={required}
-            className={`form-input ${errors.streetAddress ? 'error' : ''}`}
-          />
-          {errors.streetAddress && (
-            <div className="error-message">
-              {errors.streetAddress}
-            </div>
-          )}
-        </div>
+        {/* Street Address - Full Width */}
+        {renderField('streetAddress', true)}
         
+        {/* City, State, ZIP - Row */}
         <div className="address-row">
-          <div className="field-container">
-            <input
-              type="text"
-              value={values?.city || ''}
-              onChange={(e) => onChange('city', e.target.value)}
-              placeholder={required ? "City (Required)" : "City"}
-              required={required}
-              className={`form-input ${errors.city ? 'error' : ''}`}
-            />
-            {errors.city && (
-              <div className="error-message small">
-                {errors.city}
-              </div>
-            )}
-          </div>
-          
-          <div className="field-container">
-            <input
-              type="text"
-              value={values?.state || ''}
-              onChange={(e) => onChange('state', e.target.value)}
-              placeholder={required ? "State (Required)" : "State"}
-              maxLength={2}
-              required={required}
-              className={`form-input ${errors.state ? 'error' : ''}`}
-            />
-            {errors.state && (
-              <div className="error-message small">
-                {errors.state}
-              </div>
-            )}
-          </div>
-          
-          <div className="field-container">
-            <input
-              type="text"
-              value={values?.zip || ''}
-              onChange={(e) => onChange('zip', e.target.value)}
-              placeholder={required ? "ZIP (Required)" : "ZIP"}
-              required={required}
-              className={`form-input ${errors.zip ? 'error' : ''}`}
-            />
-            {errors.zip && (
-              <div className="error-message small">
-                {errors.zip}
-              </div>
-            )}
-          </div>
+          {renderField('city')}
+          {renderField('state', false, 2)}
+          {renderField('zip')}
         </div>
       </div>
     </div>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getAdminConfig, updateAdminConfig } from '../api';
-
+import { getFieldDisplayName, getFieldIcon } from '../utils/fieldNames';
 
 const DragContext = React.createContext();
 
@@ -65,6 +65,28 @@ function useDrop({ accept, drop, collect }) {
 }
 
 const ItemType = 'COMPONENT';
+
+// Component configuration using the shared utilities
+const getComponentConfig = () => [
+  { 
+    key: 'ABOUT_ME', 
+    name: getFieldDisplayName('aboutMe'), 
+    icon: getFieldIcon('aboutMe'), 
+    description: 'Large text area for user bio' 
+  },
+  { 
+    key: 'ADDRESS', 
+    name: getFieldDisplayName('address'), 
+    icon: getFieldIcon('address'), 
+    description: 'Street, city, state, ZIP fields' 
+  },
+  { 
+    key: 'BIRTHDATE', 
+    name: getFieldDisplayName('birthdate'), 
+    icon: getFieldIcon('birthdate'), 
+    description: 'Date picker for birth date' 
+  }
+];
 
 // Draggable Component Item (already on a page)
 function DraggableComponent({ component, currentPage, onMove, onRemove }) {
@@ -134,7 +156,7 @@ function DraggableComponent({ component, currentPage, onMove, onRemove }) {
         padding: '2px 6px',
         borderRadius: '10px'
       }}>
-         Drag me!
+        🖱️ Drag me!
       </span>
     </div>
   );
@@ -218,7 +240,7 @@ function PageDropZone({ pageNumber, components, onDrop, children }) {
           color: '#4caf50',
           pointerEvents: 'none'
         }}>
-           Drop component here!
+          📥 Drop component here!
         </div>
       )}
       
@@ -250,11 +272,8 @@ function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
-  const components = [
-    { key: 'ABOUT_ME', name: 'About Me', icon: '📝', description: 'Large text area for user bio' },
-    { key: 'ADDRESS', name: 'Address', icon: '🏠', description: 'Street, city, state, ZIP fields' },
-    { key: 'BIRTHDATE', name: 'Birthdate', icon: '🎂', description: 'Date picker for birth date' }
-  ];
+  // Get component configuration using shared utilities
+  const components = getComponentConfig();
 
   useEffect(() => {
     loadConfig();
@@ -299,13 +318,12 @@ function AdminDashboard() {
   const saveConfig = async () => {
     // Validate: each page must have at least one component
     if (config[2].length === 0 || config[3].length === 0) {
-      alert(' Each page must have at least one component!');
+      alert('⚠️ Each page must have at least one component!');
       return;
     }
 
     setSaving(true);
     try {
-      
       const componentPageMap = {};
       Object.entries(config).forEach(([page, components]) => {
         components.forEach(comp => {
@@ -314,9 +332,9 @@ function AdminDashboard() {
       });
 
       await updateAdminConfig({ componentPageMap });
-      alert(' Configuration saved successfully! ');
+      alert('✅ Configuration saved successfully!');
     } catch (error) {
-      alert(' Failed to save configuration');
+      alert('❌ Failed to save configuration');
       console.error('Save error:', error);
     } finally {
       setSaving(false);
@@ -370,7 +388,7 @@ function AdminDashboard() {
             marginBottom: '10px',
             color: '#2c3e50'
           }}>
-             Admin Dashboard
+            ⚙️ Admin Dashboard
           </h1>
           <p style={{ 
             fontSize: '18px', 
@@ -390,7 +408,7 @@ function AdminDashboard() {
             marginBottom: '30px',
             boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
           }}>
-            <h2 style={{ marginBottom: '20px', color: '#2c3e50' }}> Available Components</h2>
+            <h2 style={{ marginBottom: '20px', color: '#2c3e50' }}>🧩 Available Components</h2>
             <div style={{ 
               display: 'grid', 
               gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', 
@@ -429,7 +447,7 @@ function AdminDashboard() {
               alignItems: 'center',
               gap: '10px'
             }}>
-               Page 2
+              📄 Page 2
               <span style={{ 
                 fontSize: '14px',
                 backgroundColor: '#3498db',
@@ -476,7 +494,7 @@ function AdminDashboard() {
               alignItems: 'center',
               gap: '10px'
             }}>
-               Page 3
+              📄 Page 3
               <span style={{ 
                 fontSize: '14px',
                 backgroundColor: '#27ae60',
@@ -518,7 +536,7 @@ function AdminDashboard() {
           marginBottom: '30px',
           boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
         }}>
-          <h2 style={{ marginBottom: '20px', color: '#2c3e50' }}> Current Configuration</h2>
+          <h2 style={{ marginBottom: '20px', color: '#2c3e50' }}>📊 Current Configuration</h2>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
             <div>
               <h3 style={{ color: '#3498db', marginBottom: '10px' }}>Page 2 Components:</h3>
@@ -573,7 +591,7 @@ function AdminDashboard() {
               marginRight: '15px'
             }}
           >
-            {saving ? ' Saving...' : ' Save Configuration'}
+            {saving ? '⏳ Saving...' : '💾 Save Configuration'}
           </button>
 
           <button 
@@ -594,7 +612,7 @@ function AdminDashboard() {
               transition: 'all 0.3s ease'
             }}
           >
-             Reset to Default
+            🔄 Reset to Default
           </button>
 
           {(config[2].length === 0 || config[3].length === 0) && (
@@ -604,7 +622,7 @@ function AdminDashboard() {
               fontSize: '16px',
               fontWeight: 'bold'
             }}>
-               Each page must have at least one component!
+              ⚠️ Each page must have at least one component!
             </div>
           )}
         </div>
@@ -665,7 +683,7 @@ function AdminDashboard() {
                 e.target.style.color = '#3498db';
               }}
             >
-               View Data →
+              📊 View Data →
             </Link>
           </nav>
         </div>

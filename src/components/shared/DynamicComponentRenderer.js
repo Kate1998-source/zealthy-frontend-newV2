@@ -29,7 +29,6 @@ export const DynamicComponentRenderer = ({
     const Component = COMPONENT_MAP[componentType];
     if (!Component) return null;
 
-    // Special handling for AddressComponent which expects different props structure
     if (componentType === 'ADDRESS') {
       return (
         <Component
