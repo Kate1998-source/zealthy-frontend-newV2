@@ -53,7 +53,7 @@ axios.interceptors.response.use(
   }
 );
 
-// Complete user registration
+
 export const registerCompleteUser = async (userData) => {
   try {
     console.log('API: Complete registration request');
@@ -66,7 +66,7 @@ export const registerCompleteUser = async (userData) => {
   }
 };
 
-// Check email availability
+
 export const checkEmailExists = async (email) => {
   try {
     console.log('API: Checking email:', email);
