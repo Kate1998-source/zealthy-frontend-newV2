@@ -305,7 +305,7 @@ function AdminDashboard() {
 
     setSaving(true);
     try {
-      // Convert config to the format expected by the backend
+      
       const componentPageMap = {};
       Object.entries(config).forEach(([page, components]) => {
         components.forEach(comp => {

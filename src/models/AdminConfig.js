@@ -1,4 +1,4 @@
-// src/models/AdminConfig.js
+
 export class AdminConfig {
   constructor(config = {}) {
     this.config = config;

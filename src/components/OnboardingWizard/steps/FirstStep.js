@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { checkEmailExists } from '../../api';
+import { checkEmailExists } from '../../../api';
 import { User } from '../../models/User';
 import { useFormValidation } from '../../hooks/useFormValidation';
 import { ValidationSummary } from '../shared/ValidationSummary';

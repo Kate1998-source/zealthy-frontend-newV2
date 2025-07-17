@@ -1,4 +1,4 @@
-// src/models/User.js - Enhanced with required field validation
+
 export class User {
   constructor(data = {}) {
     this.email = data.email || '';

@@ -19,7 +19,7 @@ export const ValidationSummary = ({
 
   return (
     <div className="validation-summary">
-      <h4>⚠️ {title}</h4>
+      <h4> {title}</h4>
       <ul>
         {errorFields.map(([field, message]) => (
           <li key={field}>
