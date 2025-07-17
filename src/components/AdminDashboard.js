@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getAdminConfig, updateAdminConfig } from '../api';
 
-// Mock DnD implementation since react-dnd might not be available
+
 const DragContext = React.createContext();
 
 function DndProvider({ children, backend }) {

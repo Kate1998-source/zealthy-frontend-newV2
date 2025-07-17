@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { checkEmailExists } from '../../api';
 import { User } from '../../models/User';
+import { useFormValidation } from '../../hooks/useFormValidation';
+import { ValidationSummary } from '../shared/ValidationSummary';
 import WizardNavigation from '../navigation/WizardNavigation';
 
 function FirstStep({ userData, onNext, onError }) {
@@ -9,14 +11,11 @@ function FirstStep({ userData, onNext, onError }) {
     password: userData.password || ''
   });
   const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState({});
-  const [showValidation, setShowValidation] = useState(false);
+  const { errors, showValidation, clearError, showErrors, clearAllErrors } = useFormValidation();
 
   const handleSubmit = async (e) => {
     if (e) e.preventDefault();
-    setShowValidation(true);
     setLoading(true);
-    setErrors({});
     onError(''); // Clear previous errors
 
     // Create User instance for validation
@@ -24,9 +23,8 @@ function FirstStep({ userData, onNext, onError }) {
     const validation = user.validateStep(1);
 
     if (!validation.isValid) {
-      setErrors(validation.errors);
+      showErrors(validation.errors);
       setLoading(false);
-      // Scroll to top to show errors
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
@@ -34,14 +32,14 @@ function FirstStep({ userData, onNext, onError }) {
     try {
       const emailExists = await checkEmailExists(formData.email);
       if (emailExists) {
-        setErrors({ email: 'This email is already registered. Please use a different email.' });
+        showErrors({ email: 'This email is already registered. Please use a different email.' });
         setLoading(false);
         window.scrollTo({ top: 0, behavior: 'smooth' });
         return;
       }
 
       // Pass data to parent
-      setShowValidation(false);
+      clearAllErrors();
       onNext({ ...userData, ...formData });
       
     } catch (error) {
@@ -54,43 +52,7 @@ function FirstStep({ userData, onNext, onError }) {
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
-    // Clear error when user starts typing
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: null }));
-    }
-  };
-
-  const renderValidationSummary = () => {
-    if (!showValidation || Object.keys(errors).length === 0) {
-      return null;
-    }
-
-    const errorFields = Object.entries(errors).filter(([key, value]) => value !== null);
-    
-    if (errorFields.length === 0) {
-      return null;
-    }
-
-    return (
-      <div className="validation-summary">
-        <h4>⚠️ Please fix the following issues:</h4>
-        <ul>
-          {errorFields.map(([field, message]) => (
-            <li key={field}>
-              <strong>{getFieldDisplayName(field)}:</strong> {message}
-            </li>
-          ))}
-        </ul>
-      </div>
-    );
-  };
-
-  const getFieldDisplayName = (field) => {
-    const displayNames = {
-      email: 'Email Address',
-      password: 'Password'
-    };
-    return displayNames[field] || field;
+    clearError(field);
   };
 
   return (
@@ -102,8 +64,10 @@ function FirstStep({ userData, onNext, onError }) {
         </p>
       </div>
 
-      {/* Validation Summary */}
-      {renderValidationSummary()}
+      <ValidationSummary 
+        errors={errors} 
+        showValidation={showValidation} 
+      />
       
       <form onSubmit={handleSubmit} className="wizard-form">
         <div className="form-field">
@@ -152,7 +116,7 @@ function FirstStep({ userData, onNext, onError }) {
           currentStep={1}
           onNext={handleSubmit}
           loading={loading}
-          canProceed={true} // Always allow clicking, but show errors
+          canProceed={true}
           isLastStep={false}
         />
       </form>
