@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { checkEmailExists } from '../../../api';
-import { User } from '../../models/User';
-import { useFormValidation } from '../../hooks/useFormValidation';
-import { ValidationSummary } from '../shared/ValidationSummary';
+import { User } from '../../../models/User';
+import { useFormValidation } from '../../../hooks/useFormValidation';
+import { ValidationSummary } from '../../shared/ValidationSummary';
 import WizardNavigation from '../navigation/WizardNavigation';
 
 function FirstStep({ userData, onNext, onError }) {

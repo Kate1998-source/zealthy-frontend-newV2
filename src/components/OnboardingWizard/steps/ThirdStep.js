@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { registerCompleteUser } from '../../../api';
-import { User } from '../../models/User';
-import { AdminConfig } from '../../models/AdminConfig';
-import { useFormValidation } from '../../hooks/useFormValidation';
-import { ValidationSummary } from '../shared/ValidationSummary';
-import { DynamicComponentRenderer } from '../shared/DynamicComponentRenderer';
-import { validateComponents } from '../../utils/validationUtils';
+import { User } from '../../../models/User';
+import { AdminConfig } from '../../../models/AdminConfig';
+import { useFormValidation } from '../../../hooks/useFormValidation';
+import { ValidationSummary } from '../../shared/ValidationSummary';
+import { DynamicComponentRenderer } from '../../shared/DynamicComponentRenderer';
+import { validateComponents } from '../../../utils/validationUtils';
 import WizardNavigation from '../navigation/WizardNavigation';
 
 function ThirdStep({ userData, adminConfig, onBack, onDataChange, onComplete, onError }) {
